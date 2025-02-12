@@ -273,7 +273,7 @@ function game_server() constructor {
     function end_game(_game) {
         var _game_id = _game.get_game_id();
         _game.close();
-        
+        //HELLO
         struct_remove(self.games, _game_id);
         delete _game;
     
