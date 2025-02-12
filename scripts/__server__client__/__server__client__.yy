@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"__server__client__",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"__server__client__",
+  "parent":{
+    "name":"__server__client__",
+    "path":"folders/Scripts/__construtors__/__server__client__.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}
