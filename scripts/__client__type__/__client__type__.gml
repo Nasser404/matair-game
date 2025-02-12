@@ -1,4 +1,4 @@
-function client_type(_client) constructor {
+function server_client_type(_client) constructor {
     self.client = _client;
     self.connected_game_id = undefined;
     
@@ -17,17 +17,29 @@ function client_type(_client) constructor {
         return self.get_connected_game_id() == undefined;
     }
     
+    ///@return {Id.socket}
+    function get_socket() {return self.client.get_socket();}
+    
     ///@param {struct.game} game
     function connect_to_game(_game) {
         self.connected_game_id = _game.get_game_id();
         _game.connect_to_client(self.client);
+        
+        var _data = {"type" : MESSAGE_TYPE.GAME_INFO,
+                     "info" : _game.get_data()}
+                
+        send_packet(_data);
     }
     
-    function disconnect_from_game() {
-        self.connected_game_id = undefined;
+    function disconnect_from_game() { // ACTUAL DISCONNECTION FROM GAME INSTRUCTION
+        self.connected_game_id = undefined; 
         var _data = {
-            "type" : MESSAGE_TYPE.GAME_END
+            "type" : MESSAGE_TYPE.GAME_DISCONNECT
         }
         send_packet(_data);
+    }
+    
+    function disconnect_from_server() {
+        
     }
 }

@@ -8,8 +8,8 @@ function game(_game_id, _server) constructor {
     self.conected_players_socket = [];
     self.conected_viewer_socket  = [];
     self.connected_orb_colors    = {}; 
-    self.server = _server;
-    
+    self.server                  = _server;
+    self.local_game              = false;
     
     
     
@@ -69,7 +69,7 @@ function game(_game_id, _server) constructor {
     function close() { // 
         for (var i =0, n= array_length(connected_clients);i<n;i++) {
             var _socket = connected_clients[i];
-            self.server.clients[$ _socket].game_ended();
+            self.server.clients[$ _socket].disconnect_from_game(); // TELL ALL CLIENT CONNECTED TO GAME TO DISCONNECT
         }
     }
 }

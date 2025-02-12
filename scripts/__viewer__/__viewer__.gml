@@ -1,4 +1,4 @@
-function viewer(_client) : client_type(_client) constructor {
+function viewer(_client) : server_client_type(_client) constructor {
     self.type = "VIEWER"
     
     function init() {

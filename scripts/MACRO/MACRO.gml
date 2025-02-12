@@ -18,12 +18,13 @@ enum MESSAGE_TYPE {
     PING,
     GAME_INFO,
     RESET,
-    GAME_END,
+    GAME_DISCONNECT,
     ORB_CONNECT,
     PLAYER_CONNECT,
     VIEWER_CONNECT,
     PONG,
-    NEW_ORB_CODE, 
+    NEW_ORB_CODE,
+    SERVER_DISCONNECT,
 };
 
 function array_remove_value(_array, _value) {
