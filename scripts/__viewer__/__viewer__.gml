@@ -19,4 +19,8 @@ function viewer(_client) : server_client_type(_client) constructor {
         
         send_packet(_data);
     }
+    
+    function disconnected_from_server() {
+        
+    }
 }

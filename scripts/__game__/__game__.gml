@@ -10,7 +10,7 @@ function game(_game_id, _server) constructor {
     self.connected_orb_colors    = {}; 
     self.server                  = _server;
     self.local_game              = false;
-    
+    self.day_of_last_move        = date_get_day_of_year(date_current_datetime());
     
     
     function get_data() {
@@ -21,7 +21,10 @@ function game(_game_id, _server) constructor {
         }
         return _data
     }
+    function get_day_of_last_move(){return self.day_of_last_move};
     
+    function is_local_game() {return self.local_game == true}
+    function get_number_of_connected_orbs() {return array_length(self.conected_orbs_socket)}
     function remove_connection(_socket) {
         array_remove_value(self.conected_orbs_socket,    _socket);
         array_remove_value(self.conected_players_socket, _socket);

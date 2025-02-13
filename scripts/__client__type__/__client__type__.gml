@@ -38,8 +38,8 @@ function server_client_type(_client) constructor {
         }
         send_packet(_data);
     }
-    
-    function disconnect_from_server() {
-        
+    function ask_disconnect() {
+        self.client.ask_disconnect();
     }
+
 }

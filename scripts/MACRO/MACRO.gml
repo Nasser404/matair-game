@@ -25,6 +25,7 @@ enum MESSAGE_TYPE {
     PONG,
     NEW_ORB_CODE,
     SERVER_DISCONNECT,
+    PLAYER_OPTION
 };
 
 function array_remove_value(_array, _value) {

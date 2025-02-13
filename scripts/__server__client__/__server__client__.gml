@@ -73,20 +73,20 @@ function server_client(_socket, _server) constructor {
     function disconnect_from_server() { 
         time_source_destroy(self.keep_alive); // destroy keep alive time source 
         
-        client_type.disconnect_from_server();
+        client_type.disconnected_from_server();
         if (is_identified) { // If client was identified
             var _connected_game_id = self.client_type.get_connected_game_id(); 
             if (_connected_game_id != undefined) {// Check if the client was connected to a game
                 
                 // If was connected to a game, tell the game to remove the connection to it
                 self.server.games[$ _connected_game_id].remove_connection(self.socket);
-                if (client_type.get_type() == "PLAYER") {
-                    
-                    
-                }
             }
         }
         self.killed = true;
+    }
+    
+    function ask_disconnect() {
+        _server.disconnect_from_server(self.socket);
     }
     
 

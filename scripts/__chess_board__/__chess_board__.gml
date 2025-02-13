@@ -580,6 +580,7 @@ function chess_board(_x, _y, _sprite_index, _view = piece_color.white, _verbose 
         
         draw_set_color(c_white);
         draw_set_valign(fa_middle)
+        draw_set_halign(fa_left);
         var _xoffset = 0;
         var _yoffset = 32;
         var _view_offset = [-_yoffset, 8 * TILE + _yoffset];
