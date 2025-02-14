@@ -41,11 +41,14 @@ function main_menu() {
 
 function player_join_menu() {
     
-    
+    draw_set_valign(fa_top);
+    draw_set_halign(fa_left);
+    draw_set_font(fnt_game);
     var _mx = device_mouse_x_to_gui(0);
     var _my = device_mouse_y_to_gui(0);
     
     var _sprites = [spr_name, spr_orb_code];
+    var _texts   = [global.name, global.orb_code];
     var _x = 48;
     var _y = 72;
     for (var i = 0; i <2;i++) {
@@ -60,7 +63,10 @@ function player_join_menu() {
             }
             
         }
+        
         draw_sprite(_sprite, 0, _x, _y);
+        var _draw_text = (current_writing == i) ? global.vk.get_draw_string() : _texts[i]
+        draw_text(_x, _y, _draw_text);
         _y+=_h+32;
     }
     
@@ -87,3 +93,11 @@ function player_join_menu() {
 }
 
 menu_pages = [main_menu, player_join_menu];
+
+deselect_text = function() {
+    current_writing = undefined;
+   
+}
+
+
+global.vk.set_close_script(deselect_text);

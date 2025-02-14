@@ -1,3 +1,8 @@
-test_client = network_create_socket(network_socket_ws);
-network_connect_raw_async(test_client, "192.168.1.189", 29920);
+client = new player_client();
 
+var _sucess = client.create();
+
+if (_sucess < 0) {
+    instance_destroy();
+    show_debug_message("Client could not connect to server")
+}

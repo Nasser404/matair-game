@@ -1,5 +1,6 @@
 /// @description Insérez la description ici
 
+if (!global.vk.is_closed()) clicked = undefined;
 switch (clicked) {
     case 0 : 
         
@@ -26,7 +27,7 @@ switch (clicked) {
     case 4 : 
         
     current_writing = 0;
-    if (obj_virtual_keyboard.hidden) obj_virtual_keyboard.show();
+    global.vk.write_on("name", 12)
     clicked = undefined
         
     break;
@@ -35,8 +36,8 @@ switch (clicked) {
     case 5 : 
         
     current_writing = 1; 
-    if (obj_virtual_keyboard.hidden) obj_virtual_keyboard.show();
-        clicked = undefined
+    global.vk.write_on("orb_code", 4)
+    clicked = undefined
     
     
     break;

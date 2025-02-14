@@ -4,7 +4,9 @@
 
 display_set_gui_size(camera_get_view_width(view_camera[0]), camera_get_view_height(view_camera[0]));
 audio_channel_num(1);
-depth = 1000;
+depth = 0;
 
 global.name = "";
 global.orb_code = "";
+
+global.vk = new  virtual_keyboard();

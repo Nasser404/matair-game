@@ -53,7 +53,7 @@
   "packageId":"",
   "parent":{
     "name":"MultiClient",
-    "path":"folders/MultiClient.yy",
+    "path":"folders/Extensions/MultiClient.yy",
   },
   "productId":"",
   "resourceType":"GMExtension",

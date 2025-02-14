@@ -7,3 +7,5 @@ if (os_browser != browser_not_a_browser) {
 }
 
 if keyboard_check_pressed(ord("R")) game_restart();
+    
+global.vk.step();
