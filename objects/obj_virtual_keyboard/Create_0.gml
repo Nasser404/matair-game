@@ -20,8 +20,15 @@ function show() {
 }
 
 my_string = "";
+
+draw_string = my_string;
+
 max_string_lenght = 8;
 function set_max_string_lenght(_lenght) {
     max_string_lenght = _lenght;
 }
 clicked = undefined;
+show_bar = false;
+alarm[0] = 45;
+
+validate_script = undefined;

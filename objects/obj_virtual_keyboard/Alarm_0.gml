@@ -1,3 +1,3 @@
 /// @description Insérez la description ici
-menu_pages[menu_page]();
-
+show_bar = !show_bar;
+alarm[0] = 45;

@@ -3,7 +3,9 @@
 switch (clicked) {
     case 0 : 
         
-    room_goto(rm_game);
+    //room_goto(rm_game);
+    menu_page = 1;
+    clicked = undefined;
     break;
         
     case 1 : 
@@ -20,5 +22,35 @@ switch (clicked) {
         clicked = undefined;    
     break;
     
+    
+    case 4 : 
+        
+    current_writing = 0;
+    if (obj_virtual_keyboard.hidden) obj_virtual_keyboard.show();
+    clicked = undefined
+        
+    break;
+        
+    
+    case 5 : 
+        
+    current_writing = 1; 
+    if (obj_virtual_keyboard.hidden) obj_virtual_keyboard.show();
+        clicked = undefined
+    
+    
+    break;
+    case 6 :
+        menu_page = 0;
+        clicked = undefined;
+    break;
+    
+    
+    case 7 :
+        
+    room_goto(rm_game);
+    break;
+    default : clicked = undefined; break;
 }
+
 
