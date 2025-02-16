@@ -1,6 +1,8 @@
 /// @description Insérez la description ici
 
-if (!global.vk.is_closed()) clicked = undefined;
+
+
+if (!global.vk.is_closed() and ((clicked != 4) or (clicked != 5))) clicked = undefined;
 switch (clicked) {
     case 0 : 
         
@@ -27,7 +29,7 @@ switch (clicked) {
     case 4 : 
         
     current_writing = 0;
-    global.vk.write_on("name", 12)
+    global.vk.write_on("name", 10)
     clicked = undefined
         
     break;
@@ -36,7 +38,7 @@ switch (clicked) {
     case 5 : 
         
     current_writing = 1; 
-    global.vk.write_on("orb_code", 4)
+    global.vk.write_on("orb_code", ORB_CODE_LENGHT)
     clicked = undefined
     
     
@@ -49,9 +51,11 @@ switch (clicked) {
     
     case 7 :
         
-    room_goto(rm_game);
+    if (can_play) room_goto(rm_game);
+        clicked = undefined;
     break;
     default : clicked = undefined; break;
 }
 
 
+can_play = (string_length(global.orb_code)>=ORB_CODE_LENGHT) && (string_length(global.name)>=1);

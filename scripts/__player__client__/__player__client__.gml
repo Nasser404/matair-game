@@ -1,13 +1,31 @@
 function player_client() constructor {
-    self.client = undefined;
+    self.client         = -1;
+    
+    
+    
+    
+    timeout = function() {
+       // room_goto(rm_menu);
+        instance_destroy(obj_client);
+    }
+    
+    timeout_timer = time_source_create(time_source_global, 5, time_source_units_seconds, timeout)
+    time_source_start(timeout_timer);
     
     function create() {
-        self.client = network_create_socket(network_socket_ws);
-        network_connect_raw_async(self.client, SERVER_IP, 29920);
-        return self.client;
+        
+        var _port = 28770;
+        while ((self.client <= 0) and _port < 29920) {
+            
+            self.client = network_create_socket_ext(network_socket_ws, _port);
+            _port++;
+        }
+        
+        network_connect_raw_async(self.client, SERVER_IP, SERVER_PORT);
     }
     
     
+
     function close() {
         network_destroy(self.client);
     }
@@ -89,5 +107,4 @@ function player_client() constructor {
         
         buffer_delete(_buffer);
     }
-}
 }

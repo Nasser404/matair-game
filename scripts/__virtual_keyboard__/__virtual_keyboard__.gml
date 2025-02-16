@@ -14,6 +14,8 @@ function virtual_keyboard() constructor  {
         if (close_script!=undefined) close_script(); 
             
         if (self.binded_var!=undefined) variable_global_set(binded_var, current_string);
+        
+        current_string = "";    
     }
     
     function show() {
@@ -67,7 +69,8 @@ function virtual_keyboard() constructor  {
         self.x = lerp(x, xto, 0.08);
         self.y = lerp(y, yto, 0.08);
         self.current_string = string_copy(self.current_string, 1, max_string_lenght);
-        self.draw_string = self.current_string+ (show_bar ? "|" : ""); 
+        var _current_string_lenght = string_length(current_string);
+        self.draw_string = self.current_string+ (show_bar ? (_current_string_lenght < max_string_lenght ? "_" : "") : ""); 
         
         switch (clicked) {
             case 0 : // QUIT
@@ -114,8 +117,9 @@ function virtual_keyboard() constructor  {
         var _char = 0;
         
         draw_set_alpha(0.7)
-        draw_rectangle(_xoff-32, _yoff-16, _xoff+room_width+32, _yoff+540, false);
+        draw_roundrect(_xoff-16, _yoff-16, _xoff+room_width, _yoff+540, false)
         draw_set_alpha(1);
+        
         for(var i = 0; i < 6; i++) {
             var _x = _xoff;
             var _y = _yoff + i*32;

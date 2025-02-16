@@ -3,8 +3,9 @@ menu_page = 0;
 
 clicked = undefined;
 current_writing = undefined;
-
+can_play = false;
 function main_menu() {
+    
     // TITLE
     var _title_x = 134;
     var _title_y = 81;
@@ -65,8 +66,12 @@ function player_join_menu() {
         }
         
         draw_sprite(_sprite, 0, _x, _y);
+        
         var _draw_text = (current_writing == i) ? global.vk.get_draw_string() : _texts[i]
-        draw_text(_x, _y, _draw_text);
+        draw_set_color(c_white);
+        draw_set_halign(fa_center);
+        draw_set_valign(fa_middle)
+        draw_text(_x+_w/2, _y+_h/2-8, _draw_text);
         _y+=_h+32;
     }
     
@@ -86,7 +91,7 @@ function player_join_menu() {
             }
             
         }
-        draw_sprite(_sprite, 0, _x, _y);
+        draw_sprite(_sprite, can_play, _x, _y);
         _x+=_w+32;
     }
     

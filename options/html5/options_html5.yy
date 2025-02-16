@@ -1,6 +1,16 @@
 {
   "$GMHtml5Options":"",
   "%Name":"HTML5",
+  "ConfigValues":{
+    "CLIENT":{
+      "option_html5_browser_title":"Mat@ir",
+      "option_html5_icon":"fav.ico",
+      "option_html5_index":"index.html",
+    },
+    "SERVER":{
+      "option_html5_icon":"fav.ico",
+    },
+  },
   "name":"HTML5",
   "option_html5_allow_fullscreen":true,
   "option_html5_browser_title":"Created with GameMaker",
