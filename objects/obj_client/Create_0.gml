@@ -1,2 +1,2 @@
-client = new player_client();
-client.create();
+global.client = new player_client();
+global.client.create();

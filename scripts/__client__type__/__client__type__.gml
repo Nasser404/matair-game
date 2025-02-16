@@ -14,7 +14,8 @@ function server_client_type(_client) constructor {
     }
     
     function is_in_game() {
-        return self.get_connected_game_id() == undefined;
+
+        return self.get_connected_game_id() != undefined;
     }
     
     ///@return {Id.socket}
@@ -30,7 +31,10 @@ function server_client_type(_client) constructor {
                 
         send_packet(_data);
     }
-    
+    function get_game() {
+        if (connected_game_id!=undefined) return _client.server[$ connected_game_id];
+            else return noone;
+    }
     function disconnect_from_game() { // ACTUAL DISCONNECTION FROM GAME INSTRUCTION
         self.connected_game_id = undefined; 
         var _data = {
@@ -40,6 +44,10 @@ function server_client_type(_client) constructor {
     }
     function ask_disconnect() {
         self.client.ask_disconnect();
+    }
+    
+    function disconnect(_socket) {
+        self.client.disconnect(_socket);
     }
 
 }

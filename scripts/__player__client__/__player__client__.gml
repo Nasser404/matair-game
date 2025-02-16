@@ -1,7 +1,11 @@
+function player_send_packet(_data) {
+    if (global.client!=undefined) {
+        global.client.send_packet(global.client.client, _data);
+    }
+}
+
 function player_client() constructor {
     self.client         = -1;
-    
-    
     
     
     timeout = function() {
@@ -14,19 +18,17 @@ function player_client() constructor {
     
     function create() {
         
-        var _port = 28770;
-        while ((self.client <= 0) and _port < 29920) {
-            
-            self.client = network_create_socket_ext(network_socket_ws, _port);
-            _port++;
-        }
-        
+        self.client = network_create_socket(network_socket_ws);
         network_connect_raw_async(self.client, SERVER_IP, SERVER_PORT);
     }
     
     
 
     function close() {
+        
+ 
+        time_source_destroy(timeout_timer);
+        show_debug_message("closing client");
         network_destroy(self.client);
     }
     
@@ -48,19 +50,65 @@ function player_client() constructor {
         
         switch (_type) {
             case MESSAGE_TYPE.IDENTIFICATION:
+                var _data = {"type" : MESSAGE_TYPE.IDENTIFICATION}    
+                if (room = rm_player) _data[$ "identifier"] = "PLAYER";
+                else _data[$ "identifier"] = "VIEWER";
+                    
+                send_packet(_socket, _data);
             break;
                 
             case MESSAGE_TYPE.PING:
+                var _data = {"type" : MESSAGE_TYPE.PONG}
+                time_source_reset(timeout_timer);
+                time_source_start(timeout_timer);
+                send_packet(_socket, _data);
                 //show_debug_message($"RECEIVED PONG({_socket})")
             break;
             
-            case MESSAGE_TYPE.ORB_CONNECT : 
-                self.handle_orb_connect(_socket, _data);
+            case MESSAGE_TYPE.PLAYER_CONNECT: 
+                handle_player_connect(_socket, data);
+            break;
+            
+            case MESSAGE_TYPE.VIEWER_CONNECT :
+                handle_viewer_connect(_socket, data)
+            break;
+            
+            
+            case MESSAGE_TYPE.PLAYER_OPTION :
+                handle_player_option(_socket, _data);
+            
+            break;
+            
+            case MESSAGE_TYPE.ORB_LIST :
+                handle_orb_list(_socket, _data);
             break;
         }
     }
 
+    function handle_orb_list(_socket, _data) {
+        global.orb_list = _data[$ "orb_list"];
+    }
+    function handle_player_connect(_socket, data) {
+        var _data = {
+        "type" : MESSAGE_TYPE.PLAYER_CONNECT,
+        "player_name" : global.name,
+        "player_orb_code" : global.orb_code,        
+        }
+        send_packet(_socket, _data);
+    }
     
+    function handle_viewer_connect(_socket, data) {
+        
+        
+        
+    }
+    
+    function handle_player_option(_socket, data) {
+        global.play_options = data[$ "options"];
+        global.playing_orb  = data[$ "orb_info"];
+        
+        
+    }
     function packet_received(_network_event) {
         var _type = _network_event[? "type"];
         var _ip,_port, _socket, _data, _buffer;

@@ -51,7 +51,7 @@ switch (clicked) {
     
     case 7 :
         
-    if (can_play) room_goto(rm_game);
+    if (can_play) room_goto(rm_player);
         clicked = undefined;
     break;
     default : clicked = undefined; break;

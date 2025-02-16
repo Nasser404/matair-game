@@ -21,6 +21,7 @@ function player(_client) : server_client_type(_client) constructor {
     function disconnected_from_server() {
         if (self.orb != undefined) {
             self.orb.disconnect_player_of_interface(self.orb_interface, self);
+            self.orb.remove_player(self.get_socket())
         }
     }
 }

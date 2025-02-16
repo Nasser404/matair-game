@@ -75,6 +75,7 @@ function server_client(_socket, _server) constructor {
         
         client_type.disconnected_from_server();
         if (is_identified) { // If client was identified
+            self.client_type.disconnected_from_server(); // Wrapper to disconnect from servers
             var _connected_game_id = self.client_type.get_connected_game_id(); 
             if (_connected_game_id != undefined) {// Check if the client was connected to a game
                 
@@ -86,9 +87,14 @@ function server_client(_socket, _server) constructor {
     }
     
     function ask_disconnect() {
-        _server.disconnect_from_server(self.socket);
+        self.server.disconnect_from_server(self.socket);
     }
     
+    function disconnect(_socket) {
+        
+        self.server.disconnect_from_server(_socket);
+    }
+
 
     
     

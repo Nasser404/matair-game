@@ -1,4 +1,4 @@
-function draw_orb_info(_x, _y, _orb_info) {
+function draw_orb_info(_x, _y, _orb_info = {}) {
     
     /*
         var _orb_info = {
@@ -35,9 +35,21 @@ function draw_orb_info(_x, _y, _orb_info) {
 }
 
 
+function draw_simple_orb_info(_x, _y, _orb_info = {}) {
+    draw_set_color(c_white);
+    draw_sprite(spr_simple_orb_info, 0, _x, _y);
+    draw_set_halign(fa_left);
+    draw_set_valign(fa_top); 
+    draw_set_font(fnt_big_info);
+    var _id_x = _x +45;
+    var _id_y = _y +13;
+    draw_text(_id_x, _id_y, _orb_info[$ "id"]);
+    
+    
+    
+} 
 
-
-function draw_game_info(_x, _y, _game_info) {
+function draw_game_info(_x, _y, _game_info = {}) {
     /*var _game_info = {
         "status" : 0,
         "player"  : "",
