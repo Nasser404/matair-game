@@ -467,7 +467,7 @@ function chess_board(_x, _y, _sprite_index, _view = piece_color.white, _verbose 
         var _board_string = ""
         for (var i = 0; i < 8; i++) {
             for (var j = 0; j < 8; j++) {
-                var _piece = self.grid[i, j];
+                var _piece = self.grid[j, i];
                 if (_piece == noone) _board_string+="*"
                 else _board_string+=_piece.get_s();    
             }

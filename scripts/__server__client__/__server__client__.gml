@@ -47,12 +47,9 @@ function server_client(_socket, _server) constructor {
     function is_viewer() {return self.get_type() == CLIENT_TYPE.VIEWER;}
     
     
-    function connect_to_game(_game_id) { 
-        if (self.client_type != undefined) self.client_type.connect_to_game(_game_id);
-    }
-    
-    function disconnect_from_game(_game_id) { 
-        if (self.client_type != undefined) self.client_type.disconnect_from_game(_game_id); // Wrapper to disconnect from game
+
+    function disconnect_from_game() { 
+        if (self.client_type != undefined) self.client_type.disconnect_from_game(); // Wrapper to disconnect from game
         
     }
     

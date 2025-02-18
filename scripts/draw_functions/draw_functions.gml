@@ -52,8 +52,8 @@ function draw_simple_orb_info(_x, _y, _orb_info = {}) {
 function draw_game_info(_x, _y, _game_info = {}) {
     /*var _game_info = {
         "status" : 0,
-        "player"  : "",
-        "opponent": "",
+        "player1"  : "",
+        "player2 "",
         
     }*/
     draw_set_color(c_white);
@@ -65,7 +65,7 @@ function draw_game_info(_x, _y, _game_info = {}) {
     draw_set_font(fnt_small_info);
     var _player_x = _x + 79;
     var _player_y = _y + 5;
-    draw_text(_player_x, _player_y, _game_info[$ "player"] ?? "");
+    draw_text(_player_x, _player_y, _game_info[$ "player1"] ?? "");
     
     
     
@@ -73,10 +73,9 @@ function draw_game_info(_x, _y, _game_info = {}) {
     
     var _text, _col;
     switch (_game_info[$ "status"])  {
-        default:
-        case 0 : _text = "NO GAME";  _col = c_white; break;
-        case 1 : _text = "ON GOING"; _col = c_orange;break;
-        case 2 : _text = "GAME END"; _col = c_red;break;
+        default: _text = "NO GAME";  _col = c_white; break;
+        case 0 : _text = "ON GOING"; _col = c_orange;break;
+        case 1 : _text = "GAME END"; _col = c_red;break;
         
     }
     
@@ -92,7 +91,7 @@ function draw_game_info(_x, _y, _game_info = {}) {
     draw_set_color(c_yellow)
     var _opponent_x = _x + 170;
     var _opponent_y = _y + 50;
-    draw_text(_opponent_x, _opponent_y, _game_info[$ "opponent"] ?? "");
+    draw_text(_opponent_x, _opponent_y, _game_info[$ "player2"] ?? "");
 
     
     

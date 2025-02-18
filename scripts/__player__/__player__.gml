@@ -1,7 +1,8 @@
 function player(_client) : server_client_type(_client) constructor {
     self.type                 = CLIENT_TYPE.PLAYER
-    self.connected_orb_id     =  undefined;
+    self.connected_orb_id     = undefined;
     self.orb_interface        = undefined;
+    
     
     function connected_to_server() {
         var _data = {
@@ -25,6 +26,7 @@ function player(_client) : server_client_type(_client) constructor {
         _orb.connect_player(get_socket());
         
     }
+   
     
     function get_orb(_orb_id = connected_orb_id) {
         if (_orb_id == undefined) return undefined

@@ -43,15 +43,14 @@ function player_client() constructor {
         
         switch (_type) {
             case MESSAGE_TYPE.IDENTIFICATION:
-                var _data = {"type" : MESSAGE_TYPE.IDENTIFICATION}    
+                _data = {"type" : MESSAGE_TYPE.IDENTIFICATION};
                 if (room = rm_player) _data[$ "identifier"] = CLIENT_TYPE.PLAYER;
                 else _data[$ "identifier"] = CLIENT_TYPE.VIEWER;
-                    
                 send_packet(_socket, _data);
             break;
                 
             case MESSAGE_TYPE.PING:
-                var _data = {"type" : MESSAGE_TYPE.PONG}
+                _data = {"type" : MESSAGE_TYPE.PONG};
                 time_source_reset(timeout_timer);
                 time_source_start(timeout_timer);
                 send_packet(_socket, _data);
@@ -59,11 +58,11 @@ function player_client() constructor {
             break;
             
             case MESSAGE_TYPE.PLAYER_CONNECT: 
-                handle_player_connect(_socket, data);
+                handle_player_connect(_socket, _data);
             break;
             
             case MESSAGE_TYPE.VIEWER_CONNECT :
-                handle_viewer_connect(_socket, data)
+                handle_viewer_connect(_socket, _data)
             break;
             
             

@@ -1,3 +1,4 @@
+///@self Game server
 function game_server() constructor {
     self.server = undefined; 
     self.server_created = false;
@@ -36,6 +37,7 @@ function game_server() constructor {
         show_debug_message("\n\nServer closed !\n\n");
     }
     
+    ///@return {struct.game}
     function create_game(_game_id =  get_unique_id(), _local_game = false, _virtual_game = false) {
         self.games[$ _game_id] = new game(_game_id, self, _local_game, _virtual_game);
         return self.games[$ _game_id];
@@ -248,12 +250,13 @@ function game_server() constructor {
     
         _client = clients[$ socket];
         var _player = _client.client_type;
+        _player.set_name(_player_name);
     
         
-        if (string_copy(_orb_code, 1, 2) == "VG") { // IF GAME IS VIRTUAL GAME
-            var _new_game = self.games[$ _orb_code] ?? create_game(_orb_code, false, true);
-            //_new_game.
-            
+        if (string_copy(_player_orb_code, 1, 2) == "VG") { // IF GAME IS VIRTUAL GAME
+            var _new_game = self.games[$ _player_orb_code] ?? create_game(_player_orb_code, false, true); 
+            _new_game.connect_client(socket);
+            exit;
         }
         
         
@@ -263,12 +266,8 @@ function game_server() constructor {
         for (var i = 0, n = array_length(self.orbs_sockets);i<n;i++) { 
             var _orb_socket = self.orbs_sockets[i];
             var _orb = self.clients[$ _orb_socket].client_type;
-       
             var _orb_code = _orb.get_code();
-            
-         
-            if (_orb_code == _player_orb_code) {
-                _player_orb = _orb;
+            if (_orb_code == _player_orb_code) _player_orb = _orb;
             }
         }
     

@@ -1,6 +1,7 @@
 function server_client_type(_client) constructor {
     self.client = _client;
     self.connected_game_id = undefined;
+    self.name              = undefined;
     
     
     ///@return {Id.socket} Socket of client
@@ -12,6 +13,15 @@ function server_client_type(_client) constructor {
     ///@return {String} ID of connected games
     function get_connected_game_id() {return self.connected_game_id;}
     
+    function set_color(_color) {self.color = _color};
+    function get_color(_color) {return self.color};
+    
+    
+    
+    function set_name(_name) {self.name =_name};
+    function get_name(){return self.name};
+    
+    function set_connected_game_id(_game_id) {self.connected_game_id = _game_id};
     /// @desc Wrap client function of sending packet to self socket
     ///@param {struct} data Data to send
     function send_packet(_data) { self.client.send_packet(_data); } 
@@ -26,26 +36,12 @@ function server_client_type(_client) constructor {
         else return undefined;
     }
     
-    ///@desc Connect client to game corresponding to the given game ID
-    ///@param {string} game_id
-    function connect_to_game(_game_id) {
-        self.connected_game_id = _game_id;
-        
-        var _game = get_game(_game_id);
-        _game.connect_client(get_socket());
-        
-        var _data = {"type" : MESSAGE_TYPE.GAME_INFO,
-                     "info" : _game.get_data()}
-                
-        send_packet(_data);
-    }
-
     ///@desc Disconnect client from game it was connected to
     function disconnect_from_game() { // ACTUAL DISCONNECTION FROM GAME INSTRUCTION
         var _game = get_game();
         if (_game!=undefined) _game.disconnect_client(get_socket()); //Tell game to disconnect client from it
-            
-        self.connected_game_id = undefined;
+        self.connected_game_id  = undefined;
+        self.color              = undefined;
          
         var _data = {
             "type" : MESSAGE_TYPE.GAME_DISCONNECT

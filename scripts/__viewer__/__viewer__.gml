@@ -8,7 +8,7 @@ function viewer(_client) : server_client_type(_client) constructor {
         var _game_list = [];
         for (var i =0, n = array_length(_list); i < n; i++) {
             var _game = _games[$ i];
-            var _game_info = _game.get_data();
+            var _game_info = _game.info();
             array_push(_game_list, _info)
         }
         

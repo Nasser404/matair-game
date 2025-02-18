@@ -114,6 +114,7 @@ function virtual_keyboard() constructor  {
         var _mx = device_mouse_x_to_gui(0);
         var _my = device_mouse_y_to_gui(0);
         
+        var _x, _y;
         var _char = 0;
         
         draw_set_alpha(0.7)
@@ -121,8 +122,8 @@ function virtual_keyboard() constructor  {
         draw_set_alpha(1);
         
         for(var i = 0; i < 6; i++) {
-            var _x = _xoff;
-            var _y = _yoff + i*32;
+            _x = _xoff;
+            _y = _yoff + i*32;
             for (var j = 0; j<6;j++) {
                 var _sprite = _sprites[j];
                 draw_sprite(_sprite, 0, _x, _y);

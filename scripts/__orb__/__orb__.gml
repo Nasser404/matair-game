@@ -9,6 +9,8 @@ function orb(_client) : server_client_type(_client) constructor {
     self.orb_id                  = undefined;
     self.orb_free                = false;
     self.player_on_orb           = [];
+    
+    
     self.interfaces = [undefined, undefined];
     
     
@@ -46,12 +48,15 @@ function orb(_client) : server_client_type(_client) constructor {
         
         return _data
     }
-    function get_code(){return self.orb_code;show_message(orb_code)}
+    function get_code(){return self.orb_code;}
     ////////////////////////////////////////////////////////////////////////////////
     
     //////////////////////////////////////// SETTERS ////////////////////////////////////
     function set_code(_code) { self.orb_code = _code;}
-    function set_id(_id) { self.orb_id = _id; }
+    function set_id(_id) { 
+        self.orb_id = _id; 
+        self.name   = _id;
+    }
     
     /////////////////////////////////////////////////////////////////////////////////////   
     
