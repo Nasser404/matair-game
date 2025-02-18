@@ -1,7 +1,7 @@
 function viewer(_client) : server_client_type(_client) constructor {
-    self.type = "VIEWER"
+    self.type = CLIENT_TYPE.VIEWER
     
-    function init() {
+    function connected_to_server() {
         var _games = self.client.server.games;
         var _list  = struct_get_names(_games);
         

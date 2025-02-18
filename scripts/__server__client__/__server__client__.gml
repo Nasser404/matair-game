@@ -2,100 +2,73 @@
 ///@param {Id.socket} socket
 ///@param {struct.game_server} server
 function server_client(_socket, _server) constructor {
+    self.server         = _server;     // server ref
     self.socket         = _socket;
+    self.client_type    = undefined;
+    
+    /////// SETTING UP TIMEOUT SYSTEM ///////////
     self.last_packet    = 0;
     function send_keep_alive() { self.server.send_keep_alive(self.socket);}
     self.keep_alive     = time_source_create(time_source_game, KEEP_ALIVE_INTERVAL, time_source_units_seconds, self.send_keep_alive,[] ,-1);
     time_source_start(self.keep_alive);
-    self.server         = _server;
+    
     
     function get_last_packet() {return self.last_packet};
-    function get_socket() {return self.socket};
-    
-    self.is_identified = false;
-    self.client_type       = undefined;
-    self.killed = false;
-    function ping_reply() {
-        self.last_packet = 0;
-    }
+    function ping_reply() {self.last_packet = 0;}
+    function ping_sent() {self.last_packet++;}
+    /////////////////////////////////////////////
     
 
-    function add_one_packet() {
-        self.last_packet++;
-    }
+    function get_socket() {return self.socket};
+    
     function identify(_identifier) {
         switch (_identifier) {
-            case "ORB"      : self.client_type = new orb(self); break;
-            case "PLAYER"   : self.client_type = new player(self); break;
-            case "VIEWER"   : self.client_type = new viewer(self); break;
+            case CLIENT_TYPE.ORB      : self.client_type = new orb(self); break;
+            case CLIENT_TYPE.PLAYER   : self.client_type = new player(self); break;
+            case CLIENT_TYPE.VIEWER   : self.client_type = new viewer(self); break;
         }
         
-        self.client_type.init();
-        self.is_identified= true;
-        self.exist = true;
+        self.client_type.connected_to_server();
     }
     
-    function send_packet(_data) {
-        if (self.killed) exit;
-            
-        self.server.send_packet(self.socket, _data);
-    }
+    ///@desc Wrap of server function, send packet to self socket
+    ///@param {struct} data Data to send
+    function send_packet(_data) { self.server.send_packet(self.socket, _data);}
     
     ///@desc Return type of client
     ///@return {string}
     function get_type() {
-        if !self.is_identified return "NONE"
+        if (client_type == undefined) return undefined;
         else return self.client_type.get_type();   
     }
     
-    function is_orb() {
-        return self.get_type() == "ORB";
-    }
-    function is_player() {
-        return self.get_type() == "PLAYER";
-    }
-    function is_viewer() {
-        return self.get_type() == "VIEWER";
+    function is_orb() { return self.get_type() == CLIENT_TYPE.ORB;}
+    function is_player() {return self.get_type() == CLIENT_TYPE.PLAYER;}
+    function is_viewer() {return self.get_type() == CLIENT_TYPE.VIEWER;}
+    
+    
+    function connect_to_game(_game_id) { 
+        if (self.client_type != undefined) self.client_type.connect_to_game(_game_id);
     }
     
-    function connect_to_game(_game) { 
-        if !self.is_identified return 
-            
-        self.client_type.connect_to_game(_game);
-    }
-    
-    function disconnect_from_game() { 
-        if (self.is_identified) self.client_type.disconnect_from_game(); // Wrapper to disconnect from game
+    function disconnect_from_game(_game_id) { 
+        if (self.client_type != undefined) self.client_type.disconnect_from_game(_game_id); // Wrapper to disconnect from game
         
     }
     
-    ///@desc disconnect client from server
-    function disconnect_from_server() { 
+    ///@desc Code to run when client is disconnected from server
+    function disconnected_from_server() { 
         time_source_destroy(self.keep_alive); // destroy keep alive time source 
         
-        client_type.disconnected_from_server();
-        if (is_identified) { // If client was identified
-            self.client_type.disconnected_from_server(); // Wrapper to disconnect from servers
-            var _connected_game_id = self.client_type.get_connected_game_id(); 
-            if (_connected_game_id != undefined) {// Check if the client was connected to a game
-                
-                // If was connected to a game, tell the game to remove the connection to it
-                self.server.games[$ _connected_game_id].remove_connection(self.socket);
-            }
+        // If client was identified
+        if (self.client_type != undefined) { 
+            self.client_type.disconnect_from_game();  // Client disconnect from games
+            self.client_type.disconnected_from_server(); // Wrapper to run disconnect from server code
         }
-        self.killed = true;
     }
     
-    function ask_disconnect() {
-        self.server.disconnect_from_server(self.socket);
-    }
-    
-    function disconnect(_socket) {
-        
-        self.server.disconnect_from_server(_socket);
-    }
-
-
-    
+    ///@desc Ask server to disconnect given socket
+    ///@param {ID.socket} socket
+    function disconnect_from_server(_socket, _reason = DISCONNECT_REASONS.NO_REASON) { self.server.disconnect_from_server(_socket, _reason); }
     
 }

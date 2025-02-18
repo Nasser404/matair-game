@@ -4,21 +4,36 @@ enum ORB_INTERFACE {
     OPPONENT,
 }
 function orb(_client) : server_client_type(_client) constructor {
-    self.type = "ORB"
+    self.type = CLIENT_TYPE.ORB
     self.orb_code                = undefined;
     self.orb_id                  = undefined;
     self.orb_free                = false;
     self.player_on_orb           = [];
     self.interfaces = [undefined, undefined];
     
-    function get_id() {return self.orb_id}
-    function init() {
+    
+    ///@desc ORB CONNECT TO SERVER
+    function connected_to_server() {
         var _data = {
             "type" : MESSAGE_TYPE.ORB_CONNECT,
         }
         send_packet(_data);
         show_debug_message("SENDING ORB CONNECT");
+        /// SEND REAL ORB TO CONNECT (SEND HIS INFORMATION FOR FIRST CONNECTION)
     }
+    
+     ///@desc ORB DISCONNECT TO SERVER
+    function disconnected_from_server() {
+        // Disconnect all player on orb
+        for (var i = 0, n = array_length(player_on_orb); i < n; i++) { 
+            disconnect_from_server(player_on_orb[i], DISCONNECT_REASONS.ORB_DISCONNECTED);
+        }
+        
+        struct_remove(client.server.orbs, self.orb_id);
+    }
+    
+    ///////////////////////////////////// GETTERS ///////////////////////////////////
+    function get_id() {return self.orb_id};
     
     function get_info() {
         var _data = {
@@ -30,9 +45,18 @@ function orb(_client) : server_client_type(_client) constructor {
         }
         
         return _data
-        
     }
+    function get_code(){return self.orb_code;show_message(orb_code)}
+    ////////////////////////////////////////////////////////////////////////////////
     
+    //////////////////////////////////////// SETTERS ////////////////////////////////////
+    function set_code(_code) { self.orb_code = _code;}
+    function set_id(_id) { self.orb_id = _id; }
+    
+    /////////////////////////////////////////////////////////////////////////////////////   
+    
+    
+    ///////////////////// CHANGER SYSTEME "INTERFACE" //////////////////////////////////////
     function is_occupied() {
         
         var _occupied = false;
@@ -44,15 +68,13 @@ function orb(_client) : server_client_type(_client) constructor {
         else return !is_interface_free(ORB_INTERFACE.PLAYER)
         
     }
-    function set_code(_code) { self.orb_code = _code;}
-    function set_id(_id) { self.orb_id = _id; }
-    function get_code(){return self.orb_code;show_message(orb_code)}
+
     
     function is_interface_free(_interface) {
         return self.interfaces[_interface] == undefined;
     }
     
-    function connect_player_to_interface(_interface ,_player) {
+    function connect_player_to_interface(_interface ,_player) { 
         _player.connect_to_orb(self, _interface);
         self.interfaces[_interface] = _player;
     }
@@ -63,9 +85,10 @@ function orb(_client) : server_client_type(_client) constructor {
     
     function disconnect_player_of_interface(_interface ,_player) {
         self.interfaces[_interface] = undefined;
-        
-        
     }
+    ///////////////////////////////////////////////////////////////////////////////////////
+    
+    
     
     function reset() {
         self.connected_player_socket = [];
@@ -74,15 +97,10 @@ function orb(_client) : server_client_type(_client) constructor {
         send_packet(_data);
     }
     
-    function disconnected_from_server() {
-        for (var i = 0, n = array_length(player_on_orb); i < n; i++) {
-            disconnect(player_on_orb[i]);
-        }
-    }
-    
     function add_player(_socket) {
         array_push(player_on_orb, _socket)
     }
+    
     function remove_player(_socket) {
         array_remove_value(player_on_orb, _socket)
     }

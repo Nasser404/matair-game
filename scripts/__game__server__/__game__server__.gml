@@ -9,6 +9,8 @@ function game_server() constructor {
     self.orbs_sockets               = [];      // store Sockets of all orbs currently connected
     self.viewers_sockets            = [];      // store Sockets of all viewers currently connected
     self.games = {};                           // store all ongoing games
+    self.orbs  = {};
+    generate_unique_id_list();
     
     /// @desc Create server on network.
     /// @return {bool} Return if the server creation on the network was successful
@@ -29,6 +31,23 @@ function game_server() constructor {
         return server_created;
     }
     
+    function close() {
+        network_destroy(self.server);
+        show_debug_message("\n\nServer closed !\n\n");
+    }
+    
+    function create_game(_game_id =  get_unique_id(), _local_game = false, _virtual_game = false) {
+        self.games[$ _game_id] = new game(_game_id, self, _local_game, _virtual_game);
+        return self.games[$ _game_id];
+    }
+    
+    ///@param {String} game_id
+    function close_game(_game_id) {
+        var _game = self.games[$ _game_id]
+        _game.close();
+        struct_remove(self.games, _game_id);
+        delete _game;
+    } 
     
     
     
@@ -40,12 +59,12 @@ function game_server() constructor {
         
         if (_last_packet >= MAX_NO_KEEP_ALIVE_REPLY) {    
             // TIMEOUT EVENT           
-            disconnect_from_server(_socket);
+            disconnect_from_server(_socket, DISCONNECT_REASONS.TIMEOUT);
             show_debug_message("CLIENT TIMEOUT")
         }
         else {
             // SEND PING
-            clients[$ _socket].add_one_packet()
+            clients[$ _socket].ping_sent()
             //show_debug_message($"SENDING PING({_socket})");
             var _data = {"type" : MESSAGE_TYPE.PING}
             send_packet(_socket, _data);
@@ -55,10 +74,20 @@ function game_server() constructor {
     
     ///@desc Disconnect a given socket from the server
     ///@param {Id.socket} socket socket to disconnect
-    function disconnect_from_server(_socket) {
+    ///@param {struct} reason reason of disconnect
+    function disconnect_from_server(_socket, _reason = DISCONNECT_REASONS.NO_REASON) {
         // REMOVE SOCKET FROM EVERY SOCKET LIST AND FROM CLIENTS STRUCT
         
-        if (clients[$ _socket] != undefined) clients[$ _socket].disconnect_from_server();
+        
+        if (clients[$ _socket] != undefined) {
+            
+            if (_reason != DISCONNECT_REASONS.NO_REASON) {
+                var _data = {"type" : MESSAGE_TYPE.DISCONNECT_REASON, "reason" : _reason};
+                clients[$ _socket].send_packet(_data);
+            }
+            
+            clients[$ _socket].disconnected_from_server();
+        }
         struct_remove(self.clients, _socket);
         array_remove_value(self.socket_list,     _socket);
         array_remove_value(self.orbs_sockets,    _socket);
@@ -87,31 +116,6 @@ function game_server() constructor {
         
         buffer_delete(_buffer);
     }
-    
-
-    
-    ///@desc Handle client connection
-    function handle_connect(_ip, _port, _socket) {
-        show_debug_message($"Client connected({_socket}) {_ip}:{_port}");
-        
-        array_push(self.socket_list, _socket); // Add socket of connected client to socket list
-        
-        var _data = {       
-            "type" : MESSAGE_TYPE.IDENTIFICATION,
-        };
-        self.send_packet(_socket, _data);     // Send identification request to client
-        clients[$ _socket] = new server_client(_socket, self);
-        
-    }
-    
-    
-    /// @desc Handle client disconnect
-    function handle_disconnect(_ip, _port, _socket) { 
-        self.disconnect_from_server(_socket);
-        show_debug_message($"Client disconnected({_socket}) {_ip}:{_port}");
-    }
-    
-    
     
     /// @desc Procces Async network event packet received
     /// @param {DSmap} network_event
@@ -144,20 +148,28 @@ function game_server() constructor {
         
     }
     
-    function close() {
-        network_destroy(self.server);
-        show_debug_message("\n\nServer closed !\n\n");
+    ///@desc Handle client connection
+    function handle_connect(_ip, _port, _socket) {
+        show_debug_message($"Client connected({_socket}) {_ip}:{_port}");
+        
+        array_push(self.socket_list, _socket); // Add socket of connected client to socket list
+        
+        var _data = {       
+            "type" : MESSAGE_TYPE.IDENTIFICATION,
+        };
+        self.send_packet(_socket, _data);     // Send identification request to client
+        clients[$ _socket] = new server_client(_socket, self);
+        
     }
     
-    ///@param {struct.game} game
-    function destroy_game(_game) {
-        var _game_id = _game.get_game_id();
-        _game.close();
-        //HELLO
-        struct_remove(self.games, _game_id);
-        delete _game;
-    } 
-        
+    
+    /// @desc Handle client disconnect
+    function handle_disconnect(_ip, _port, _socket) { 
+        self.disconnect_from_server(_socket);
+        show_debug_message($"Client disconnected({_socket}) {_ip}:{_port}");
+    }
+    
+    
     /// @desc Handle data received
     /// @param {string} ip 
     /// @param {int} port
@@ -191,7 +203,7 @@ function game_server() constructor {
             case MESSAGE_TYPE.NEW_ORB_CODE : 
             _orb_code   = _data[$ "orb_code"];
             _client = clients[$ _socket];
-            _orb.set_code(_orb_id);
+            _orb.set_code(_orb_code);
             break
             
             case MESSAGE_TYPE.PLAYER_CONNECT :
@@ -213,21 +225,19 @@ function game_server() constructor {
     
             array_push(_orb_list, _orb.get_info());
         }
-        
-        
-        
         var _data = {"type" : MESSAGE_TYPE.ORB_LIST, "orb_list" : _orb_list}
         send_packet(_socket, _data)
         
     }
+    
     function handle_identification(_socket, _data) {
         var _identifier = _data[$ "identifier"];        // ORB, PLAYER, VIEWER
         show_debug_message($"{_identifier} IDENTIFY")
         switch (_identifier) {
             
-            case "ORB"      : array_push(self.orbs_sockets,    _socket); break;
-            case "PLAYER"   : array_push(self.players_sockets, _socket); break;
-            case "VIEWER"   : array_push(self.viewers_sockets, _socket); break;
+            case CLIENT_TYPE.ORB      : array_push(self.orbs_sockets,    _socket); break;
+            case CLIENT_TYPE.PLAYER   : array_push(self.players_sockets, _socket); break;
+            case CLIENT_TYPE.VIEWER   : array_push(self.viewers_sockets, _socket); break;
         }
         clients[$ _socket].identify(_identifier);
     }
@@ -239,6 +249,14 @@ function game_server() constructor {
         _client = clients[$ socket];
         var _player = _client.client_type;
     
+        
+        if (string_copy(_orb_code, 1, 2) == "VG") { // IF GAME IS VIRTUAL GAME
+            var _new_game = self.games[$ _orb_code] ?? create_game(_orb_code, false, true);
+            //_new_game.
+            
+        }
+        
+        
         var _player_orb = undefined;
     
         // Check if any of the orb code the player given correspond to a connected orb
@@ -260,31 +278,32 @@ function game_server() constructor {
             if (_player_orb.is_in_game()) { // ORB ALREADY IN A GAME 
                 
                 var _orb_game = self.games[$ _player_orb.get_connected_game_id()]; // GET GAME OF ORB
-                if (_orb_game.get_number_of_connected_orbs() < 2) _possible_action= {"CONTINUE": false, "NEW GAME" : false, "END GAME" : true};
-                else {
-                    if (!_orb_game.is_local_game()) {
-                        if (_player_orb.is_interface_free(ORB_INTERFACE.PLAYER)) _possible_action = {"CONTINUE": true, "NEW GAME" : false, "END GAME" : false};
-                        else  _possible_action= {"CONTINUE": false, "NEW GAME" : false, "END GAME" : false};   
-                    } else {
-                         if (_player_orb.is_interface_free(ORB_INTERFACE.PLAYER)) or (_player_orb.is_interface_free(ORB_INTERFACE.OPPONENT)) _possible_action = {"CONTINUE": true, "NEW GAME" : false, "END GAME" : false};
-                         else _possible_action= {"CONTINUE": false, "NEW GAME" : false, "END GAME" : false};   
-                    }
-                    
-                    var _day = date_get_day_of_year(date_current_datetime());
-                    if ((_day - _orb_game.get_day_of_last_move()) > 2) _possible_action[$ "END GAME"] = true;
                 
-                }    
+                if (!_orb_game.is_local_game()) {
+                    if (_player_orb.is_interface_free(ORB_INTERFACE.PLAYER)) _possible_action = {"CONTINUE": true, "NEW GAME" : false, "END GAME" : false};
+                    else  _possible_action= {"CONTINUE": false, "NEW GAME" : false, "END GAME" : false};   
+                } else {
+                    if (_player_orb.is_interface_free(ORB_INTERFACE.PLAYER)) or (_player_orb.is_interface_free(ORB_INTERFACE.OPPONENT)) _possible_action = {"CONTINUE": true, "NEW GAME" : false, "END GAME" : false};
+                    else _possible_action= {"CONTINUE": false, "NEW GAME" : false, "END GAME" : false};   
+                }
+                
+                var _day = date_get_day_of_year(date_current_datetime());
+                if ((_day - _orb_game.get_day_of_last_move()) > 2) _possible_action[$ "END GAME"] = true;
+                
+                   
             } else { // ORB NOT IN A GAME
                 
                 _possible_action = {"CONTINUE": false, "NEW GAME" : true, "END GAME" : false};
                 
             }
             
-            _player_orb.add_player(socket)
+            _player_orb.add_player(socket);
+            
             var _data = {"type" : MESSAGE_TYPE.PLAYER_OPTION, "options" : _possible_action, "orb_info" : _player_orb.get_info()}
             send_packet(socket, _data)
+            
         } else { // The code given by the player does not match the code of any of the connect orb
-            disconnect_from_server(socket); // Disconnect the player
+            disconnect_from_server(socket, DISCONNECT_REASONS.INVALID_ORB_CODE); // Disconnect the player
         }
     }
         
@@ -297,37 +316,16 @@ function game_server() constructor {
         var _orb = _client.client_type;
         _orb.set_id(_orb_id);
         _orb.set_code(_orb_code);
-        var _orb_game = undefined;
         
-        /// Check if orb connecting is already in a game
-        var _games = struct_get_names(self.games);
-        for (var i=0, n=array_length(_games); i<n; i++) {
-            var _game_id = _games[i];
-            var _game = self.games[$ _game_id];
-            if (array_contains(_game.get_playing_orb_id(), _orb_id)) {
-                _orb_game = _game;
-                break;
-            }
-        }
+        _orb.reset(); // tell orb to reset
+        self.orbs[$ _orb_id] = _socket;
         
-        if (_orb_game!=undefined) { // Orb connecting was already in a existing game
-            //get game board
-            var _game_board = _orb_game.get_board_string();  
-            
-            if (_orb_board == _game_board) { // Orb board and game board are the samme
-                _orb.connect_to_game(_orb_game); // Connect orb to game
-                
-            } else { // Orb board and game board are not the same (should never happend)
-                
-                destroy_game(_orb_game);    // END THE GAME
-                
-            }
-        } else { // orb connecting was not in a existing game
-            _orb.reset(); // tell orb to reset
-            
-        } 
-
     }
+    
+
+    
+    
 }
+
     
 

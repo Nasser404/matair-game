@@ -7,26 +7,19 @@ function player_send_packet(_data) {
 function player_client() constructor {
     self.client         = -1;
     
-    
-    timeout = function() {
-       // room_goto(rm_menu);
-        instance_destroy(obj_client);
-    }
-    
+    /////// SETTING UP TIMEOUT SYSTEM ///////////
+    timeout = function() { instance_destroy(obj_client);}
     timeout_timer = time_source_create(time_source_global, 5, time_source_units_seconds, timeout)
     time_source_start(timeout_timer);
+    ///////////////////////////////////////////////
     
     function create() {
-        
         self.client = network_create_socket(network_socket_ws);
         network_connect_raw_async(self.client, SERVER_IP, SERVER_PORT);
     }
     
-    
 
     function close() {
-        
- 
         time_source_destroy(timeout_timer);
         show_debug_message("closing client");
         network_destroy(self.client);
@@ -51,8 +44,8 @@ function player_client() constructor {
         switch (_type) {
             case MESSAGE_TYPE.IDENTIFICATION:
                 var _data = {"type" : MESSAGE_TYPE.IDENTIFICATION}    
-                if (room = rm_player) _data[$ "identifier"] = "PLAYER";
-                else _data[$ "identifier"] = "VIEWER";
+                if (room = rm_player) _data[$ "identifier"] = CLIENT_TYPE.PLAYER;
+                else _data[$ "identifier"] = CLIENT_TYPE.VIEWER;
                     
                 send_packet(_socket, _data);
             break;
@@ -85,14 +78,17 @@ function player_client() constructor {
         }
     }
 
+    
     function handle_orb_list(_socket, _data) {
         global.orb_list = _data[$ "orb_list"];
     }
+    
+    
     function handle_player_connect(_socket, data) {
         var _data = {
-        "type" : MESSAGE_TYPE.PLAYER_CONNECT,
-        "player_name" : global.name,
-        "player_orb_code" : global.orb_code,        
+        "type"              : MESSAGE_TYPE.PLAYER_CONNECT,
+        "player_name"       : global.name,
+        "player_orb_code"   : global.orb_code,        
         }
         send_packet(_socket, _data);
     }
@@ -106,9 +102,8 @@ function player_client() constructor {
     function handle_player_option(_socket, data) {
         global.play_options = data[$ "options"];
         global.playing_orb  = data[$ "orb_info"];
-        
-        
     }
+    
     function packet_received(_network_event) {
         var _type = _network_event[? "type"];
         var _ip,_port, _socket, _data, _buffer;

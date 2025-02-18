@@ -1,27 +1,36 @@
 function player(_client) : server_client_type(_client) constructor {
-    self.type                 = "PLAYER"
-    self.orb_id               = undefined;
-    self.connected_orb_socket = undefined;
-    self.orb                  = undefined;
+    self.type                 = CLIENT_TYPE.PLAYER
+    self.connected_orb_id     =  undefined;
     self.orb_interface        = undefined;
-    function init() {
+    
+    function connected_to_server() {
         var _data = {
             "type" : MESSAGE_TYPE.PLAYER_CONNECT,
         }
         send_packet(_data);
     }
     
-    function connect_to_orb(_orb, _interface) { 
-        self.orb = _orb;
-        self.ord_id = _orb.get_id();
-        self.connected_orb_socket = _orb.get_socket();
-        self.orb_interface = _interface;
-    }
-
     function disconnected_from_server() {
-        if (self.orb != undefined) {
-            self.orb.disconnect_player_of_interface(self.orb_interface, self);
-            self.orb.remove_player(self.get_socket())
+        
+        var _orb = get_orb();
+        if (_orb != undefined) {
+            _orb.remove_player(self.get_socket())
+        }
+    }
+    
+    
+    function connect_to_orb(_orb_id) { 
+        self.connected_orb_id = _orb_id;
+        var _orb = get_orb();
+        _orb.connect_player(get_socket());
+        
+    }
+    
+    function get_orb(_orb_id = connected_orb_id) {
+        if (_orb_id == undefined) return undefined
+        else {
+            var _orb_socket = client.server.orbs[$ _orb_id];
+            return  client.server.clients[$ _orb_socket]; 
         }
     }
 }

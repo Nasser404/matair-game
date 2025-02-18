@@ -9,7 +9,7 @@
 #macro MAX_CLIENT 32
 #macro KEEP_ALIVE_INTERVAL 3
 #macro MAX_NO_KEEP_ALIVE_REPLY 4
-#macro UNIQUE_ID_LIST_SIZE 65535
+#macro UNIQUE_ID_LIST_SIZE 1024
 
 #macro DEBUG true
 #macro ORB_CODE_LENGHT 4
@@ -28,9 +28,28 @@ enum MESSAGE_TYPE {
     SERVER_DISCONNECT,
     PLAYER_OPTION,
     ORB_LIST,
-    GAME_LIST
+    GAME_LIST,
+    DISCONNECT_REASON
 };
 
+enum CLIENT_TYPE {
+    ORB,
+    PLAYER,
+    VIEWER,
+    
+}
+
+enum DISCONNECT_REASONS {
+    NO_REASON,
+    INVALID_ORB_CODE ,
+    TIMEOUT,
+    ORB_DISCONNECTED,
+    SILENT,
+    
+    
+    
+    
+}
 function array_remove_value(_array, _value) {
     var _index = array_get_index(_array, _value);
     if (_index != -1) array_delete(_array, _index, 1);
@@ -56,9 +75,3 @@ function get_unique_id() {
     else return array_pop(global.unique_id);    
         
 }
-
-
-function nigga() constructor {
-    self.big = [1, 2, 3];
-}
-
