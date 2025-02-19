@@ -1,11 +1,17 @@
 /// @description Insérez la description ici
-if (os_browser != browser_not_a_browser) {
-    if (browser_height != window_get_height()) || (browser_width != window_get_width()) {
-        window_set_size(browser_width, browser_height);
+
+
+
+global.vk.step();
+
+
+
+if (global.in_game) and (global.game_board != undefined) {
     
+    var _x = device_mouse_x_to_gui(0);
+    var _y = device_mouse_y_to_gui(0);
+    
+    if (mouse_check_button_pressed(mb_left)) {
+        global.game_board.clicked(_x, _y);
     }
 }
-
-if keyboard_check_pressed(ord("R")) game_restart();
-    
-global.vk.step();

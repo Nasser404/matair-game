@@ -1,6 +1,6 @@
 /// @description Insérez la description ici
-
-menu[menu_page]();
+if (global.game_board == undefined) menu[menu_page]();
+    
 var _mx = device_mouse_x_to_gui(0);
 var _my = device_mouse_y_to_gui(0);
 

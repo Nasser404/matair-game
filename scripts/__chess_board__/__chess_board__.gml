@@ -1,6 +1,6 @@
 #macro TILE 32
 
-function chess_board(_x, _y, _sprite_index, _view = piece_color.white, _verbose = true, _server_board = false) constructor {
+function chess_board(_x, _y, _sprite_index, _view = piece_color.white, _verbose = true, _server_board = false, _local = false) constructor {
     
     self.grid = array_create_ext(8, function() {return array_create(8, noone);})
     
@@ -10,7 +10,7 @@ function chess_board(_x, _y, _sprite_index, _view = piece_color.white, _verbose 
     self.turn = piece_color.white;
     self.view = _view;
     self.selected_piece = noone;
-    
+    self.n_of_turn      = 0;
     self.captured_pieces = {"white" : {"Pawn":0, "Rook":0, "Knight": 0, "Bishop" : 0, "Queen":0, "King":0}, 
                             "black" : {"Pawn":0, "Rook":0, "Knight": 0, "Bishop" : 0, "Queen":0, "King":0}}
     
@@ -24,6 +24,7 @@ function chess_board(_x, _y, _sprite_index, _view = piece_color.white, _verbose 
     
     self.is_false_board = false;
     self.is_server_board = _server_board;
+    self.local = _local;
     self.game_ended = false;
     self.winner = noone;
     self.possible_moves = [[], []];
@@ -117,7 +118,16 @@ function chess_board(_x, _y, _sprite_index, _view = piece_color.white, _verbose 
         self.possible_moves[_col] = check_possible_moves(_col);
 
     }
-    
+    function load_info(_info) {
+        self.players_names = {"white" : _info[$ "white_player"] ?? "?",
+                              "black" : _info[$ "black_player"] ?? "?"}
+        
+        self.playing_orb   =    {"white" : _info[$ "white_orb"] ?? "?",
+                                "black" : _info[$ "black_orb"]  ?? "?"}
+        self.game_ended = _info[$ "status"];
+        self.winner     = _info[$ "winner"];
+        
+    }
     function check_possible_moves(_col) {
         var _possibles_moves = []
         for (var i = 0; i < 8; i++) {
@@ -230,7 +240,7 @@ function chess_board(_x, _y, _sprite_index, _view = piece_color.white, _verbose 
     
     ///////////////////////////////////////////////////////////// BOARD CLICKED ///////////////////////////////////////////////////////
     function clicked(_x, _y) {
-        if (self.is_server_board) return;
+        if ((self.is_server_board) or (global.color != turn) or global.asked_a_move) and (!local) return;
             
         var _relative_x = _x - self.x;
         var _relative_y = _y - self.y;
@@ -281,7 +291,21 @@ function chess_board(_x, _y, _sprite_index, _view = piece_color.white, _verbose 
     
     //////// NETWORKING STUFF !!!!!! ///////
     function ask_move_piece(_from, _to) {
-        move_piece(_from, _to);
+        if (local) or (is_false_board) move_piece(_from, _to);
+        else {
+            if (global.color == turn) {
+                
+                var _data = {
+                    "type" : MESSAGE_TYPE.ASK_MOVE,
+                    "game_id" : global.game_info[$ "game_id"],
+                    "from" : _from,
+                    "to"   : _to,
+                    "color": global.color,
+                }
+                global.asked_a_move = true;
+                player_send_packet(_data);
+            }
+        }    
     }
     
     function update_pieces_last_pos(_col) {
@@ -429,13 +453,13 @@ function chess_board(_x, _y, _sprite_index, _view = piece_color.white, _verbose 
     }
     
     function get_board_data() {
-        var _data = {"turn" : self.turn, "captured_pieces" : self.captured_pieces}
-        var _board_data = array_create_ext(8, function() {return array_create(8, noone);})
+        var _data = {"turn" : self.turn, "captured_pieces" : self.captured_pieces, "number_of_turn" : n_of_turn}
+        var _board_data = array_create_ext(8, function() {return array_create(8, "");})
         for (var i = 0; i < 8; i++) {
             for (var j = 0; j < 8; j++) {
                 var _piece = self.grid[i, j];
                 if (_piece == noone) continue;
-                _board_data[i, j] = _piece.get_id();
+                _board_data[i, j] = _piece.get_data();
                 
             }
         }
@@ -450,15 +474,19 @@ function chess_board(_x, _y, _sprite_index, _view = piece_color.white, _verbose 
         self.grid = array_create_ext(8, function() {return array_create(8, noone);})
         self.captured_pieces = _data[$ "captured_pieces"];
         self.turn            = _data[$ "turn"]
+        self.n_of_turn       = n_of_turn;
         var _board_data      = _data[$ "board"]
         for (var i = 0; i < 8; i++) {
             for (var j = 0; j < 8; j++) {
-                var _piece_data = _board_data[i, j];
-                if (_piece_data == noone) continue;
-      
-                var _color = _piece_data[0];
-                var _type  = _piece_data[1];
+                var _piece = _board_data[i, j];
+                if (_piece == "") continue; 
+                    
+                _piece_data = string_split(_piece, ";");
+                var _type  = _piece_data[0];
+                var _color = _piece_data[1];
+                var _have_moved = _piece_data[2];
                 self.add_piece(real(_type), real(_color), [i, j])
+                self.grid[i, j].set_moved(_have_moved);
             }
         }
     }
@@ -474,6 +502,8 @@ function chess_board(_x, _y, _sprite_index, _view = piece_color.white, _verbose 
         }
         return _board_string;
     }
+    
+    
     function check_move_valid(_from, _to) {
         var _piece = self.grid[_from[0], _from[1]]
         var _moves = _piece.get_moves();
@@ -507,7 +537,7 @@ function chess_board(_x, _y, _sprite_index, _view = piece_color.white, _verbose 
     
     function next_turn() {
        
-   
+        self.n_of_turn++;
         self.turn = !self.turn;
         self.selected_piece = noone;
         
@@ -581,6 +611,7 @@ function chess_board(_x, _y, _sprite_index, _view = piece_color.white, _verbose 
         draw_set_color(c_white);
         draw_set_valign(fa_middle)
         draw_set_halign(fa_left);
+        draw_set_font(fnt_game);
         var _xoffset = 0;
         var _yoffset = 32;
         var _view_offset = [-_yoffset, 8 * TILE + _yoffset];
@@ -596,7 +627,7 @@ function chess_board(_x, _y, _sprite_index, _view = piece_color.white, _verbose 
         var _by = self.y + _view_offset[self.view];
         
         draw_sprite(spr_black_profile, 0, _bx, _by); // PROFILE
-        draw_text(_bx+ _name_offset,  _by, $"{self.players_names[$ "black"]} - {self.playing_orb[$ "black"]}"); // NAME
+        draw_text(_bx+ _name_offset,  _by, $"{self.players_names[$ "black"]} {self.playing_orb[$ "black"]}"); // NAME
         
         
         var _n = 0;
@@ -619,7 +650,7 @@ function chess_board(_x, _y, _sprite_index, _view = piece_color.white, _verbose 
         var _wy = self.y + _view_offset[!self.view];
         draw_sprite(spr_white_profile, 0, _wx, _wy); // PROFILE
         
-        draw_text(_wx+_name_offset,  _wy,  $"{self.players_names[$ "white"]} - {self.playing_orb[$ "white"]}") // NAME
+        draw_text(_wx+_name_offset,  _wy,  $"{self.players_names[$ "white"]} {self.playing_orb[$ "white"]}") // NAME
         
         _n = 0;
         for (var i = 0; i < 6; i++) {

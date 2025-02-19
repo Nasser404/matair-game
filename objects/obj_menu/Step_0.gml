@@ -51,8 +51,12 @@ switch (clicked) {
     
     case 7 :
         
-    if (can_play) room_goto(rm_player);
-        clicked = undefined;
+    if (LOCAL_TEST) room_goto(rm_game)
+    else {
+              
+        if (can_play) room_goto(rm_player);
+            clicked = undefined;
+        }
     break;
     default : clicked = undefined; break;
 }

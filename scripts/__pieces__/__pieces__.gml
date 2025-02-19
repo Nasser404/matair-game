@@ -32,7 +32,12 @@ function piece(_name, _pos, _type, _color, _board) constructor {
     self.last_pos  = [-1, -1];
     self.special_moves = [];
     self.my_board = _board;
-    function get_id() {return [self.color, self.type]}
+    function get_data() {
+        var _data = $"{self.type};{self.color};{self.has_moved}"
+        return _data
+    
+    
+    }
     
     function get_name() {return self.name}
     function get_pos() {return self.pos}
@@ -50,7 +55,8 @@ function piece(_name, _pos, _type, _color, _board) constructor {
     function update_last_pos() {
         self.last_pos = self.pos
     }
-    function set_moved() {self.has_moved = true}
+    
+    function set_moved(_moved = true) {self.has_moved = _moved}
     
  
     /**

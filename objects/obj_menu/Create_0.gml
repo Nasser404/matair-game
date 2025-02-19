@@ -94,6 +94,13 @@ function player_join_menu() {
         draw_sprite(_sprite, can_play, _x, _y);
         _x+=_w+32;
     }
+    draw_set_halign(fa_center);
+    draw_set_valign(fa_middle);
+    draw_set_color(c_lime);
+    if (can_play) {
+        var _is_virtual_game = (string_copy(global.orb_code, 1,2) == "VG");
+        if (_is_virtual_game) draw_text(135, 280, "VIRTUAL GAME");
+    }
     
 }
 

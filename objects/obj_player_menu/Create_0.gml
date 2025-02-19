@@ -16,7 +16,7 @@ function player_menu() {
     draw_set_halign(fa_center);
     draw_set_valign(fa_middle);
     
-    if (global.playing_orb == undefined) {
+    if (global.orb_info == undefined) {
         
         if (global.client!= undefined) {
             draw_set_color(c_yellow);
@@ -27,8 +27,8 @@ function player_menu() {
         }
     } else {
         /// PLAY AND BACK BUTTON
-        draw_orb_info(24, 24, global.playing_orb);
-        draw_game_info(35, 112, global.playing_game);
+        draw_orb_info(24, 24, global.orb_info);
+        draw_game_info(35, 112, global.game_info);
         
         /// PLAY AND BACK BUTTON
         var _sprites = [spr_continue, spr_new_game, spr_end_game];
@@ -67,7 +67,7 @@ function new_game_menu() {
     draw_set_valign(fa_middle);
     
 
-    draw_orb_info(24, 16, global.playing_orb);
+    draw_orb_info(24, 16, global.orb_info);
     draw_sprite(spr_versus_banner, 0,0, 104);
     if (global.orb_list != undefined) {
         var _current_page = list_index div max_list_index;

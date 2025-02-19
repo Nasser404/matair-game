@@ -2,7 +2,7 @@ function server_client_type(_client) constructor {
     self.client = _client;
     self.connected_game_id = undefined;
     self.name              = undefined;
-    
+    self.color             = undefined;
     
     ///@return {Id.socket} Socket of client
     function get_socket() {return self.client.get_socket();}
@@ -32,7 +32,7 @@ function server_client_type(_client) constructor {
     ///@desc Get reference to a game
     ///@param {String} game_id Id of game to get the reference of
     function get_game(_game_id = connected_game_id) {
-        if (_game_id !=undefined) return _client.server.games[$ _game_id]; 
+        if (_game_id !=undefined) return client.server.games[$ _game_id]; 
         else return undefined;
     }
     

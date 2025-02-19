@@ -9,7 +9,7 @@ function player_client() constructor {
     
     /////// SETTING UP TIMEOUT SYSTEM ///////////
     timeout = function() { instance_destroy(obj_client);}
-    timeout_timer = time_source_create(time_source_global, 5, time_source_units_seconds, timeout)
+    timeout_timer = time_source_create(time_source_global, 10, time_source_units_seconds, timeout)
     time_source_start(timeout_timer);
     ///////////////////////////////////////////////
     
@@ -74,9 +74,68 @@ function player_client() constructor {
             case MESSAGE_TYPE.ORB_LIST :
                 handle_orb_list(_socket, _data);
             break;
+            
+            
+            case MESSAGE_TYPE.GAME_DATA :
+                handle_game_data(_socket, _data);
+            break;
+            
+            case MESSAGE_TYPE.MOVE  :
+                handle_network_move(_socket, _data);
+            break;
+            
+            case MESSAGE_TYPE.GAME_INFO :
+                handle_game_info(_socket, _data);
+            break;
+            
         }
     }
-
+    function handle_game_info(_socket, _data) {
+        var _info                   = _data[$ "info"];
+        global.game_info = _info
+        if (global.game_board!=undefined) global.game_board.load_info(_info);
+    }
+    function handle_game_data(_socket, _data){
+        
+    
+        var _info                   = _data[$ "info"];
+        var _game_data              = _data[$ "data"]; 
+        
+        var _server_board_string           = _data[$ "board_string"];
+        var _my_assigned_color      = _data[$ "color"];
+        var _force_update          = _data[$ "force_update"]
+        
+        global.game_info = _info;
+        if (!global.in_game) {
+            global.game_board = new chess_board(7,110, spr_chess_board, _my_assigned_color);
+            global.game_board.init_board();
+            global.color        = _my_assigned_color;
+            global.game_board.load_info(_info);
+            global.game_board.load_board_data(_game_data);
+            global.game_board.calculate_legal_moves(global.color)
+            global.in_game = true;
+        } else {
+            var _my_board_string = global.game_board.get_board_string();
+            if ((_my_board_string != _server_board_string) or _force_update) {
+                global.color        = _my_assigned_color;
+                global.game_board.load_info(_info);
+                global.game_board.load_board_data(_game_data);
+                global.game_board.calculate_legal_moves(global.color);
+            }
+        }
+        
+   
+    }
+    
+    function handle_network_move(_socket, _data) {
+        var _from = _data[$ "from"];
+        var _to   = _data[$ "to"];
+        if (global.in_game) and (global.game_board != undefined) {
+            global.game_board.move_piece(_from, _to);
+            global.asked_a_move = false;
+        }
+        
+    }
     
     function handle_orb_list(_socket, _data) {
         global.orb_list = _data[$ "orb_list"];
@@ -93,14 +152,14 @@ function player_client() constructor {
     }
     
     function handle_viewer_connect(_socket, data) {
-        
+        global.game_list = data[$ "game_info_list"]
         
         
     }
     
     function handle_player_option(_socket, data) {
         global.play_options = data[$ "options"];
-        global.playing_orb  = data[$ "orb_info"];
+        global.orb_info  = data[$ "orb_info"];
     }
     
     function packet_received(_network_event) {

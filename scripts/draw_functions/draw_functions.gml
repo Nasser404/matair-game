@@ -51,13 +51,22 @@ function draw_simple_orb_info(_x, _y, _orb_info = {}) {
 
 function draw_game_info(_x, _y, _game_info = {}) {
     /*var _game_info = {
-        "status" : 0,
-        "player1"  : "",
-        "player2 "",
+    "game_id"           : self.game_unique_id,
+    "local_game"        : self.local_game,
+    "virtual_game"      : self.virtual_game,
+    "status"            : game_ended(),
+    "white_player"      : _white_player_name,
+    "black_player"      : _black_player_name,
+    "white_orb"         : _white_orb_name,
+    "black_orb"         : _black_orb_name,
+    "number_of_viewer"  : self.get_number_of_viewer(),
+    "chat_history"      : self.chat_history
         
     }*/
     draw_set_color(c_white);
-    draw_sprite(spr_game_info, 0, _x, _y);
+    
+    var _is_virtal_game = _game_info[$ "virtual_game"] ?? 0;
+    draw_sprite(spr_game_info, _is_virtal_game, _x, _y);
     draw_set_halign(fa_left);
     draw_set_valign(fa_top);
     
@@ -65,7 +74,7 @@ function draw_game_info(_x, _y, _game_info = {}) {
     draw_set_font(fnt_small_info);
     var _player_x = _x + 79;
     var _player_y = _y + 5;
-    draw_text(_player_x, _player_y, _game_info[$ "player1"] ?? "");
+    draw_text(_player_x, _player_y, _game_info[$ "white_player"] ?? "");
     
     
     
@@ -91,7 +100,7 @@ function draw_game_info(_x, _y, _game_info = {}) {
     draw_set_color(c_yellow)
     var _opponent_x = _x + 170;
     var _opponent_y = _y + 50;
-    draw_text(_opponent_x, _opponent_y, _game_info[$ "player2"] ?? "");
+    draw_text(_opponent_x, _opponent_y, _game_info[$ "black_player"] ?? "");
 
     
     

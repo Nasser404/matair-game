@@ -2,13 +2,13 @@
 #macro SERVER:IS_SERVER true
 #macro CLIENT:IS_SERVER false
 
-
+#macro LOCAL_TEST false
 
 #macro SERVER_IP "88.187.38.210"
 #macro SERVER_PORT 29920
 #macro MAX_CLIENT 32
 #macro KEEP_ALIVE_INTERVAL 3
-#macro MAX_NO_KEEP_ALIVE_REPLY 4
+#macro MAX_NO_KEEP_ALIVE_REPLY 2
 #macro UNIQUE_ID_LIST_SIZE 1024
 
 #macro DEBUG true
@@ -18,6 +18,7 @@ enum MESSAGE_TYPE {
     IDENTIFICATION,
     PING,
     GAME_DATA,
+    GAME_INFO,
     RESET,
     GAME_DISCONNECT,
     ORB_CONNECT,
@@ -47,6 +48,7 @@ enum DISCONNECT_REASONS {
     TIMEOUT,
     ORB_DISCONNECTED,
     SILENT,
+    GAME_NOT_JOINABLE,
     
     
     
