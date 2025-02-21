@@ -181,7 +181,7 @@ function chess_board(_x, _y, _sprite_index, _view = piece_color.white, _verbose 
             var _selected_piece_coord = selected_piece.get_pos()
             var _drawx = self.x + board_view(_selected_piece_coord[0]) * TILE;
             var _drawy = self.y + board_view(_selected_piece_coord[1]) * TILE;
-            draw_rectangle( _drawx , _drawy, _drawx +TILE-1, _drawy+TILE-1, false);
+            draw_rectangle( _drawx , _drawy, _drawx +TILE, _drawy+TILE, false);
             draw_set_alpha(1);
             draw_set_color(c_black);
             
@@ -194,7 +194,7 @@ function chess_board(_x, _y, _sprite_index, _view = piece_color.white, _verbose 
                 var _y = self.y + TILE * board_view(_move[1]);
                 draw_set_color(c_black);
                 draw_set_alpha(0.4);
-                draw_rectangle(_x, _y, _x+TILE-1, _y+TILE-1, false);
+                draw_rectangle(_x, _y, _x+TILE, _y+TILE, false);
                 draw_set_color(c_black);
                 draw_set_alpha(1);
                 // draw_circle(_x+TILE/2, _y + TILE/2, 3, false);
@@ -240,7 +240,7 @@ function chess_board(_x, _y, _sprite_index, _view = piece_color.white, _verbose 
     
     ///////////////////////////////////////////////////////////// BOARD CLICKED ///////////////////////////////////////////////////////
     function clicked(_x, _y) {
-        if ((self.is_server_board) or (global.color != turn) or global.asked_a_move) and (!local) return;
+        if ((self.is_server_board) or (global.color != turn) or global.asked_a_move or game_ended) and (!local) return;
             
         var _relative_x = _x - self.x;
         var _relative_y = _y - self.y;
@@ -694,7 +694,7 @@ function chess_board(_x, _y, _sprite_index, _view = piece_color.white, _verbose 
     
     function play_sfx(_sfx, _priority = 0) {
  
-        if !(self.is_false_board) audio_play_sound(_sfx, _priority, 0);
+        if (!self.is_false_board and !self.is_server_board) audio_play_sound(_sfx, _priority, 0);
     }
     
 

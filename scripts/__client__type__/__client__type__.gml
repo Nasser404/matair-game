@@ -36,6 +36,12 @@ function server_client_type(_client) constructor {
         else return undefined;
     }
     
+    ///@return {struct.server_client}
+    function get_client(_client_socket) {
+        if (_client_socket != undefined) return client.server.clients[$ _client_socket].client_type;
+        else return undefined;
+    }
+    
     ///@desc Disconnect client from game it was connected to
     function disconnect_from_game() { // ACTUAL DISCONNECTION FROM GAME INSTRUCTION
         var _game = get_game();

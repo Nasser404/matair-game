@@ -5,7 +5,6 @@ function game(_game_id, _server, _local_game = false, _virtual_game = false) con
     self.server         = _server;
     self.local_game     = _local_game;
     self.virtual_game   = _virtual_game;
-    
     self.conected_orbs_socket    = []; // MUST HAVE TWO FOR A  REAL GAME TO EXIST 0 FOR A VG
     self.connected_clients       = [];
     self.conected_players_socket = [];
@@ -22,18 +21,20 @@ function game(_game_id, _server, _local_game = false, _virtual_game = false) con
         var _black_client =  get_client(self.colors[piece_color.black]);
         
         
-        if (virtual_game) {
+        if (virtual_game) or (local_game) {
             var _white_player_name = (_white_client == undefined) ? "" : _white_client.get_name();
             var _black_player_name = (_black_client == undefined) ? "" : _black_client.get_name();
             
-            var _white_orb_name = "";
-            var _black_orb_name = "";
+            var _white_orb_name = (local_game) ? get_client(conected_orbs_socket[0]).get_name() : "";
+            var _black_orb_name = (local_game) ? get_client(conected_orbs_socket[0]).get_name() : "";
         } else {
             var _white_orb_name = (_white_client == undefined) ? "" : _white_client.get_name();
             var _black_orb_name = (_black_client == undefined) ? "" : _black_client.get_name();
             
-            var _white_player_name = "TO DO"
-            var _black_player_name = "DONT FORGET" // GET NAME OF PLAYER USING ORB VARIABLE TO GET PLAYER SOCKET
+            var _white_player = get_client(conected_orbs_socket[0].get_main_player_socket());
+            var _black_player = get_client(conected_orbs_socket[1].get_main_player_socket());
+            var _white_player_name = (_white_player == undefined) ? "" : _white_player.get_name();
+            var _black_player_name = (_black_player == undefined) ? "" : _black_player.get_name(); // GET NAME OF PLAYER USING ORB VARIABLE TO GET PLAYER SOCKET
         }
             
         
@@ -49,7 +50,8 @@ function game(_game_id, _server, _local_game = false, _virtual_game = false) con
             "number_of_viewer"  : self.get_number_of_viewer(),
             "chat_history"      : self.chat_history,
             "winner"            : self.board.winner,
-        }
+            "day_of_last_move"  : self.get_day_of_last_move(),
+         }
         return _data;
     }
     
@@ -83,8 +85,6 @@ function game(_game_id, _server, _local_game = false, _virtual_game = false) con
     
     ///@return {struct.server_client}
     function get_client(_client_socket) {
-        
-        
         if (_client_socket == undefined) return undefined;
         else return server.clients[$ _client_socket].client_type;
     }

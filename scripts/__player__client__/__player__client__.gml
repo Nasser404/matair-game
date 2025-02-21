@@ -24,7 +24,7 @@ function player_client() constructor {
         show_debug_message("closing client");
         network_destroy(self.client);
     }
-    
+
     /// @desc Handle data received
     /// @param {string} ip 
     /// @param {int} port
@@ -66,8 +66,8 @@ function player_client() constructor {
             break;
             
             
-            case MESSAGE_TYPE.PLAYER_OPTION :
-                handle_player_option(_socket, _data);
+            case MESSAGE_TYPE.ORB_DATA :
+                handle_orb_data(_socket, _data);
             
             break;
             
@@ -157,9 +157,8 @@ function player_client() constructor {
         
     }
     
-    function handle_player_option(_socket, data) {
-        global.play_options = data[$ "options"];
-        global.orb_info  = data[$ "orb_info"];
+    function handle_orb_data(_socket, data) {
+        global.orb_data = data[$ "orb_data"];
     }
     
     function packet_received(_network_event) {
@@ -204,7 +203,7 @@ function player_client() constructor {
         buffer_seek(_buffer, buffer_seek_start, 0);
         buffer_write(_buffer, buffer_string, _json_data);
         
-        network_send_raw(_socket, _buffer, 1024);
+        network_send_raw(_socket, _buffer, 1024, network_send_text);
         
         buffer_delete(_buffer);
     }

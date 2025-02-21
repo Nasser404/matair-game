@@ -1,12 +1,14 @@
 function draw_orb_info(_x, _y, _orb_info = {}) {
     
     /*
-        var _orb_info = {
-        "id" : "ORB IVRY",
-        "code" : "YVLC",
-        "in_game" : true,
-        "occupied" : true,    
-        }
+    var _data = {
+    "id" : orb_id,
+    "code" : orb_code,
+    "in_game" :  is_in_game(),
+    "status"  :  get_status(), 
+    "game_id" : connected_game_id,
+    "taken"   : is_taken(),       
+    }
         */
     draw_set_color(c_white);
     draw_sprite(spr_orb_info, 0, _x, _y);
@@ -23,16 +25,22 @@ function draw_orb_info(_x, _y, _orb_info = {}) {
     draw_text(_code_x, _code_y, $"Code : {_orb_info[$ "code"]}");
     
     draw_set_halign(fa_right);
-    draw_set_color(_orb_info[$ "occupied"] ? c_red: c_lime);
-    var _occupied_x = _x + 216;
-    var _occupied_y = _y + 50;
-    draw_text(_occupied_x, _occupied_y, _orb_info[$ "occupied"] ? "OCCUPIED" : "IDLE");
+    draw_set_color(_orb_info[$ "taken"] ? c_red: c_lime);
+    var _taken_x = _x + 216;
+    var _taken_y = _y + 50;
+    draw_text(_taken_x, _taken_y, _orb_info[$ "taken"] ? "TAKEN" : "FREE");
     
     draw_set_color(_orb_info[$ "in_game"] ? c_orange : c_white);
     var _in_game_x  = _x + 216;
     var _in_game_y  = _y + 64;
     draw_text(_in_game_x, _in_game_y, _orb_info[$ "in_game"] ? "IN GAME" : "NOT IN GAME");
+    
+    draw_set_color(_orb_info[$ "status"]== ORB_STATUS.IDLE ? c_white : c_red);
+    var _status_x = _x + 216;
+    var _status_y = _y + 2;
+    draw_text(_status_x,  _status_y, _orb_info[$ "status"]== ORB_STATUS.IDLE  ? "IDLE" : "OCCUPIED");
 }
+
 
 
 function draw_simple_orb_info(_x, _y, _orb_info = {}) {
@@ -48,7 +56,23 @@ function draw_simple_orb_info(_x, _y, _orb_info = {}) {
     
     
 } 
-
+function find_orb_option(_orb_data) {
+    var _possible_option = {"CONTINUE" : false, "NEW GAME" : false, "END GAME" : false};
+    
+    
+    if (_orb_data[$ "in_game"]) {
+        if (!_orb_data[$ "taken"]) _possible_option[$ "CONTINUE"] = true;
+        var _current_day = date_get_day_of_year(date_current_datetime()); // If last move happened on a different day we can end the game
+        if (abs(_current_day- _orb_data[$ "day_of_last_move"]) >= 1) _possible_option[$ "END GAME"] = true;
+    
+    } else {
+        _possible_option[$ "NEW GAME"] = true;
+    } 
+    
+    return _possible_option;
+    
+    
+}
 function draw_game_info(_x, _y, _game_info = {}) {
     /*var _game_info = {
     "game_id"           : self.game_unique_id,
@@ -78,20 +102,11 @@ function draw_game_info(_x, _y, _game_info = {}) {
     
     
     
-        
     
-    var _text, _col;
-    switch (_game_info[$ "status"])  {
-        default: _text = "NO GAME";  _col = c_white; break;
-        case 0 : _text = "ON GOING"; _col = c_orange;break;
-        case 1 : _text = "GAME END"; _col = c_red;break;
-        
-    }
-    
-    draw_set_color(_col);
     var _status_x = _x + 8;
     var _status_y = _y +50;
-    draw_text(_status_x,_status_y, _text);
+    draw_set_color(c_lime);
+    draw_text(_status_x,_status_y, $"ID : {_game_info[$ "game_id"]}");
     
 
     

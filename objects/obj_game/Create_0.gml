@@ -13,14 +13,15 @@ global.vk = new  virtual_keyboard();
 window_set_color(#302E2B)
 
 global.client            = undefined;
-global.orb_info          = undefined;
-global.game_info         = undefined;
+
 global.orb_list          = undefined;
+global.orb_data          = undefined;
+
+global.game_info         = undefined;
 global.game_list         = undefined;
-global.play_options       = {"CONTINUE": false, "NEW GAME" : false, "END GAME" : false};
 
 global.in_game          = false;
 global.asked_a_move     = false;
-global.color            = undefined;
 
+global.color            = undefined;
 global.game_board       = undefined;

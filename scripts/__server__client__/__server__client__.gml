@@ -42,11 +42,6 @@ function server_client(_socket, _server) constructor {
         else return self.client_type.get_type();   
     }
     
-    function is_orb() { return self.get_type() == CLIENT_TYPE.ORB;}
-    function is_player() {return self.get_type() == CLIENT_TYPE.PLAYER;}
-    function is_viewer() {return self.get_type() == CLIENT_TYPE.VIEWER;}
-    
-    
 
     function disconnect_from_game() { 
         if (self.client_type != undefined) self.client_type.disconnect_from_game(); // Wrapper to disconnect from game

@@ -20,19 +20,16 @@ function player(_client) : server_client_type(_client) constructor {
     }
     
     
-    function connect_to_orb(_orb_id) { 
-        self.connected_orb_id = _orb_id;
-        var _orb = get_orb();
-        _orb.connect_player(get_socket());
-        
-    }
    
+    function set_connected_orb_id(_orb_id) {
+        self.connected_orb_id = _orb_id;
+    }
     
     function get_orb(_orb_id = connected_orb_id) {
         if (_orb_id == undefined) return undefined
         else {
             var _orb_socket = client.server.orbs[$ _orb_id];
-            return  client.server.clients[$ _orb_socket]; 
+            return  client.server.clients[$ _orb_socket].client_type; 
         }
     }
 }

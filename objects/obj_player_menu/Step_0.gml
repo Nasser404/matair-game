@@ -29,8 +29,14 @@ switch (clicked) {
     
     
     default: // SELECTED ORB IN NEW GAME
+        
     var _clicked = clicked-3;
     clicked = undefined;
+    var _my_orb_id = global.orb_data[$ "id"];
+    var _opponent_orb_id = global.orb_list[_clicked][$ "id"];
+    //show_message($"{global.orb_list[_clicked]}")
+    player_send_packet({"type" : MESSAGE_TYPE.ORB_NEW_GAME, "id1" : _my_orb_id, "id2" : _opponent_orb_id});
+    
     break;
 }
 if (global.orb_list != undefined) {

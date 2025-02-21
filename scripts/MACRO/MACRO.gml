@@ -16,23 +16,35 @@
 
 enum MESSAGE_TYPE {
     IDENTIFICATION,
+    
     PING,
+    PONG,
+    
     GAME_DATA,
     GAME_INFO,
-    RESET,
     GAME_DISCONNECT,
+    
+    ORB_DATA,
+    ORB_RESET,
+    
     ORB_CONNECT,
     PLAYER_CONNECT,
     VIEWER_CONNECT,
-    PONG,
-    NEW_ORB_CODE,
-    SERVER_DISCONNECT,
-    PLAYER_OPTION,
+
     ORB_LIST,
     GAME_LIST,
+    
     DISCONNECT_REASON,
+    
     ASK_MOVE,
     MOVE,
+    
+    ORB_NEW_GAME,
+    ORB_CONTINUE_GAME,
+    ORB_END_GAME,
+    
+    DISCONNECT_FROM_SERVER,
+    
 };
 
 enum CLIENT_TYPE {

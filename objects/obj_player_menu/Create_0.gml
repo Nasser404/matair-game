@@ -16,7 +16,7 @@ function player_menu() {
     draw_set_halign(fa_center);
     draw_set_valign(fa_middle);
     
-    if (global.orb_info == undefined) {
+    if (global.orb_data == undefined) {
         
         if (global.client!= undefined) {
             draw_set_color(c_yellow);
@@ -27,17 +27,19 @@ function player_menu() {
         }
     } else {
         /// PLAY AND BACK BUTTON
-        draw_orb_info(24, 24, global.orb_info);
-        draw_game_info(35, 112, global.game_info);
+        draw_orb_info(24, 24, global.orb_data);
+        draw_game_info(35, 112, global.orb_data[$ "game_info"]);
         
         /// PLAY AND BACK BUTTON
         var _sprites = [spr_continue, spr_new_game, spr_end_game];
+        
+        var _possible_option = find_orb_option(global.orb_data);
         var _option = ["CONTINUE", "NEW GAME", "END GAME"]
         _x = 48;
         _y = 192;
         for (var i = 0; i <3;i++) {
             var _sprite = _sprites[i]
-            var _can_click = global.play_options[$ _option[i]] ?? false;
+            var _can_click = _possible_option[$ _option[i]] ?? false;
             var _w = sprite_get_width(_sprite);
             var _h = sprite_get_height(_sprite);
             if (point_in_rectangle(_mx, _my, _x, _y, _x+_w, _y+_h)) {
@@ -67,7 +69,7 @@ function new_game_menu() {
     draw_set_valign(fa_middle);
     
 
-    draw_orb_info(24, 16, global.orb_info);
+    draw_orb_info(24, 16, global.orb_data);
     draw_sprite(spr_versus_banner, 0,0, 104);
     if (global.orb_list != undefined) {
         var _current_page = list_index div max_list_index;
