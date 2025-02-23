@@ -7,7 +7,7 @@ function draw_orb_info(_x, _y, _orb_info = {}) {
     "in_game" :  is_in_game(),
     "status"  :  get_status(), 
     "game_id" : connected_game_id,
-    "taken"   : is_taken(),       
+    "used"   : is_used(),       
     }
         */
     draw_set_color(c_white);
@@ -25,10 +25,10 @@ function draw_orb_info(_x, _y, _orb_info = {}) {
     draw_text(_code_x, _code_y, $"Code : {_orb_info[$ "code"]}");
     
     draw_set_halign(fa_right);
-    draw_set_color(_orb_info[$ "taken"] ? c_red: c_lime);
-    var _taken_x = _x + 216;
-    var _taken_y = _y + 50;
-    draw_text(_taken_x, _taken_y, _orb_info[$ "taken"] ? "TAKEN" : "FREE");
+    draw_set_color(_orb_info[$ "used"] ? c_red: c_lime);
+    var _used_x = _x + 216;
+    var _used_y = _y + 50;
+    draw_text(_used_x, _used_y, _orb_info[$ "used"] ? "used" : "FREE");
     
     draw_set_color(_orb_info[$ "in_game"] ? c_orange : c_white);
     var _in_game_x  = _x + 216;
@@ -61,9 +61,10 @@ function find_orb_option(_orb_data) {
     
     
     if (_orb_data[$ "in_game"]) {
-        if (!_orb_data[$ "taken"]) _possible_option[$ "CONTINUE"] = true;
+        var _game_info = _orb_data[$ "game_info"]
+        if (!_orb_data[$ "used"]) _possible_option[$ "CONTINUE"] = true;
         var _current_day = date_get_day_of_year(date_current_datetime()); // If last move happened on a different day we can end the game
-        if (abs(_current_day- _orb_data[$ "day_of_last_move"]) >= 1) _possible_option[$ "END GAME"] = true;
+        if (abs(_current_day- _game_info[$ "day_of_last_move"]) >= 1) _possible_option[$ "END GAME"] = true;
     
     } else {
         _possible_option[$ "NEW GAME"] = true;

@@ -43,7 +43,7 @@ function orb(_client) : server_client_type(_client) constructor {
         "in_game" :  is_in_game(),
         "status"  :  get_status(), 
         "game_id" : connected_game_id ?? "",
-        "taken"   : is_taken(),    
+        "used"   : is_used(),    
         "game_info" : get_game_info(), 
         }
         return _data
@@ -88,10 +88,10 @@ function orb(_client) : server_client_type(_client) constructor {
     /////////////////////////////////////////////////////////////////////////////////////   
      
     function new_game_possible() {
-        //show_message($"taken : {is_taken()}\nstatus : {get_status()}\nin game : {is_in_game()}")
-        return !is_taken() and get_status() == ORB_STATUS.IDLE and !is_in_game();
+        //show_message($"used : {is_used()}\nstatus : {get_status()}\nin game : {is_in_game()}")
+        return !is_used() and get_status() == ORB_STATUS.IDLE and !is_in_game();
     }
-    function is_taken() {
+    function is_used() {
         var _game = get_game();
         var _local_game = false
         if (_game != undefined) _local_game = _game.is_local_game();

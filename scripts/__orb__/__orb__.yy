@@ -6,7 +6,7 @@
   "name":"__orb__",
   "parent":{
     "name":"__server__client__",
-    "path":"folders/Scripts/__construtors__/__server__client__.yy",
+    "path":"folders/Scripts/__construtors__/__old__/__server__client__.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

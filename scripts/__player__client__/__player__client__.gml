@@ -9,7 +9,7 @@ function player_client() constructor {
     
     /////// SETTING UP TIMEOUT SYSTEM ///////////
     timeout = function() { instance_destroy(obj_client);}
-    timeout_timer = time_source_create(time_source_global, 10, time_source_units_seconds, timeout)
+    timeout_timer = time_source_create(time_source_global, 10000, time_source_units_seconds, timeout)
     time_source_start(timeout_timer);
     ///////////////////////////////////////////////
     
@@ -75,7 +75,9 @@ function player_client() constructor {
                 handle_orb_list(_socket, _data);
             break;
             
-            
+            case MESSAGE_TYPE.GAME_LIST: 
+                handle_game_list(_socket, _data);
+            break
             case MESSAGE_TYPE.GAME_DATA :
                 handle_game_data(_socket, _data);
             break;
@@ -89,6 +91,9 @@ function player_client() constructor {
             break;
             
         }
+    }
+    function handle_game_list(_socket, _data) {
+        global.game_list = _data[$ "game_info_list"]
     }
     function handle_game_info(_socket, _data) {
         var _info                   = _data[$ "info"];
@@ -112,6 +117,7 @@ function player_client() constructor {
             global.color        = _my_assigned_color;
             global.game_board.load_info(_info);
             global.game_board.load_board_data(_game_data);
+            global.game_board.calculate_all_moves()
             global.game_board.calculate_legal_moves(global.color)
             global.in_game = true;
         } else {
@@ -120,6 +126,7 @@ function player_client() constructor {
                 global.color        = _my_assigned_color;
                 global.game_board.load_info(_info);
                 global.game_board.load_board_data(_game_data);
+                global.game_board.calculate_all_moves()
                 global.game_board.calculate_legal_moves(global.color);
             }
         }
