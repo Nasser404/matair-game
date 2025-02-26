@@ -1,14 +1,23 @@
 /// @description Insérez la description ici
+refresh_cooldown = max(0, refresh_cooldown-1);
 if (!global.vk.is_closed()) clicked = undefined;
 switch (clicked) {
-    case -1 : 
-    room_goto(rm_menu);
-    clicked = undefined;
+    
+    case -2 : // REFRESH BUTTON 
+        player_send_packet({"type" : MESSAGE_TYPE.GAME_LIST})
+        refresh_cooldown = 5 * 60;
+        clicked = undefined;
+    break;
+    
+    
+    case -1 : // BACK BUTTON
+        room_goto(rm_menu);
+        clicked = undefined;
     break;
     
     case undefined :
         break;
-    default:
+    default: // CLICKED ON A GAME
         show_message(global.game_list[clicked])
         clicked = undefined;
     break;

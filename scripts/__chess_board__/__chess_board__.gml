@@ -29,7 +29,7 @@ function chess_board(_x, _y, _sprite_index, _view = piece_color.white, _verbose 
     self.winner = noone;
     self.possible_moves = [[], []];
     self.square_reached = [[], []];
-    
+    self.last_move      = undefined;
     
     function board_view(_value) {
         return (self.view == piece_color.white) ? _value : 7 - _value;
@@ -50,7 +50,7 @@ function chess_board(_x, _y, _sprite_index, _view = piece_color.white, _verbose 
         self.winner = noone;
         self.possible_moves = [[], []];
         self.square_reached = [[], []];
-        
+        self.last_move = undefined;
         self.captured_pieces = {"white" : {"Pawn":0, "Rook":0, "Knight": 0, "Bishop" : 0, "Queen":0, "King":0}, 
                                 "black" : {"Pawn":0, "Rook":0, "Knight": 0, "Bishop" : 0, "Queen":0, "King":0}}
         //////////// PLACE PIECES /////////////////////
@@ -214,12 +214,29 @@ function chess_board(_x, _y, _sprite_index, _view = piece_color.white, _verbose 
                 
                 //draw_text(_piece_x+4, _piece_y, get_chess_pos([i, j]))
                 
+                /// HIGLIGHT LAST MOVE
+                if (last_move != undefined) {
+                            var _e = 0;
+                            repeat(2) {
+                                if (array_equals([_i, _j], self.last_move[_e])) {
+                                   
+                                    draw_set_color(c_lime);
+                                    draw_set_alpha(0.3);
+                                    draw_rectangle(_piece_x, _piece_y, _piece_x+TILE-1, _piece_y+TILE-1, false)
+                                    draw_set_color(c_black);
+                                    draw_set_alpha(1);
+                                    
+                                }
+                                _e++;
+                            }
+                            
+                        }
                 
                 if (_piece == noone) continue;
                     
 
                
-                
+       
                 // HIGHLIGHT CHECKED KING
                 draw_set_color(c_red);
                 draw_set_alpha(0.8);
@@ -232,7 +249,7 @@ function chess_board(_x, _y, _sprite_index, _view = piece_color.white, _verbose 
         }
             
         
-        /// DRAW CAPTURED PIECE
+
             
  
         
@@ -245,7 +262,7 @@ function chess_board(_x, _y, _sprite_index, _view = piece_color.white, _verbose 
         var _relative_x = _x - self.x;
         var _relative_y = _y - self.y;
         
-        var _out_of_bound = ((_relative_x < 0) or (_relative_x > 8 * TILE) or (_relative_y < 0) or (_relative_y> 8 * TILE))
+        var _out_of_bound = ((_relative_x < 0) or (_relative_x > 8 * TILE-1) or (_relative_y < 0) or (_relative_y> 8 * TILE-1))
         
         if (_out_of_bound) self.selected_piece = noone;
         else {
@@ -386,7 +403,12 @@ function chess_board(_x, _y, _sprite_index, _view = piece_color.white, _verbose 
         
         selected_piece = noone;
         if (self.verbose) show_debug_message($"{_piece.get_color() == piece_color.white ? "White" : "Black"} {_piece.get_name()} moves {get_chess_pos(_to)}!")
-        if (_real_move) next_turn();
+        if (_real_move) { 
+              //if (global.color != self.turn) 
+            self.last_move = [_from, _to];
+            next_turn();
+            
+        }
     }
     ///////////////////////////////////////////////////////////////////////////////////////
 
@@ -626,9 +648,14 @@ function chess_board(_x, _y, _sprite_index, _view = piece_color.white, _verbose 
         var _bx = self.x + _xoffset;
         var _by = self.y + _view_offset[self.view];
         
-        draw_sprite(spr_black_profile, 0, _bx, _by); // PROFILE
-        draw_text(_bx+ _name_offset,  _by, $"{self.players_names[$ "black"]} {self.playing_orb[$ "black"]}"); // NAME
-        
+        if (self.players_names[$ "black"]!="")  {
+            var _orb_name = ""
+            if (self.playing_orb[$ "black"] != "") _orb_name = $" - {self.playing_orb[$ "black"]}"
+                
+            draw_sprite(spr_black_profile, 0, _bx, _by); // PROFILE
+            draw_text(_bx+ _name_offset,  _by, $"{self.players_names[$ "black"]}" + _orb_name); // NAME
+        } else draw_text(_bx+ _name_offset,  _by, "waiting for players"); // NAME
+            
         
         var _n = 0;
         
@@ -648,9 +675,13 @@ function chess_board(_x, _y, _sprite_index, _view = piece_color.white, _verbose 
         // White
         var _wx = self.x + _xoffset;
         var _wy = self.y + _view_offset[!self.view];
-        draw_sprite(spr_white_profile, 0, _wx, _wy); // PROFILE
         
-        draw_text(_wx+_name_offset,  _wy,  $"{self.players_names[$ "white"]} {self.playing_orb[$ "white"]}") // NAME
+        if (self.players_names[$ "white"]!="")  {
+            _orb_name = ""
+            if (self.playing_orb[$ "white"] != "") _orb_name = $" - {self.playing_orb[$ "white"]}"
+            draw_sprite(spr_white_profile, 0, _wx, _wy); // PROFILE
+            draw_text(_wx+_name_offset,  _wy,  $"{self.players_names[$ "white"]}" + _orb_name) // NAME
+        } else draw_text(_wx+_name_offset,  _wy,  "waiting for players") // NAME
         
         _n = 0;
         for (var i = 0; i < 6; i++) {
@@ -665,6 +696,7 @@ function chess_board(_x, _y, _sprite_index, _view = piece_color.white, _verbose 
             
         }
         
+       
         if (self.game_ended) {
             draw_set_alpha(0.7);
             draw_set_color(c_black);
@@ -688,7 +720,7 @@ function chess_board(_x, _y, _sprite_index, _view = piece_color.white, _verbose 
             
             draw_set_halign(fa_left);
             draw_set_valign(fa_top);
-        }
+        } else  draw_sprite(spr_turn_indicator, self.turn, 160, 16);
             
     }
     

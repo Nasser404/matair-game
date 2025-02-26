@@ -51,6 +51,21 @@ if (global.game_list == undefined) {
 
     draw_set_color(c_white);
     draw_text(265, 475, $"{_current_page} OUT OF {_total_pages}")
+    
+    if (refresh_cooldown <= 0) {
+        _x = 216;
+        _y = 16;
+        
+        _w = sprite_get_width(spr_refresh);
+        _h = sprite_get_height(spr_refresh);
+        if (point_in_rectangle(_mx, _my, _x, _y, _x+_w, _y+_h)) {
+            if (mouse_check_button_pressed(mb_left)) {
+                clicked ??= -2;
+            }
+        }
+        draw_sprite(spr_refresh, 0, _x, _y);
+    }
+    
 }
 
 
@@ -65,4 +80,6 @@ if (point_in_rectangle(_mx, _my, _x, _y, _x+_w, _y+_h)) {
     }
 }
 draw_sprite(spr_mini_back, 0, _x, _y);
+
+
 

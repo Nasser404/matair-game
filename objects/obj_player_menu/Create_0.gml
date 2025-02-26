@@ -6,6 +6,7 @@ menu_page   = 0;
 
 list_index     = 0
 max_list_index = 4;
+refresh_cooldown = 0;
 
 function player_menu() {
     var _mx = device_mouse_x_to_gui(0);
@@ -28,7 +29,8 @@ function player_menu() {
     } else {
         /// PLAY AND BACK BUTTON
         draw_orb_info(24, 24, global.orb_data);
-        draw_game_info(35, 112, global.orb_data[$ "game_info"]);
+
+        if (global.orb_data[$ "game_info"]!=undefined)draw_game_info(35, 112, global.orb_data[$ "game_info"]);
         
         /// PLAY AND BACK BUTTON
         var _sprites = [spr_continue, spr_new_game, spr_end_game];
@@ -98,6 +100,21 @@ function new_game_menu() {
         draw_set_font(fnt_game);
         draw_set_color(c_white);
         draw_text(265, 475, $"{_current_page} OUT OF {_total_pages}")
+        
+        if (refresh_cooldown <= 0) {
+            _x = 216;
+            _y = 108;
+            
+            _w = sprite_get_width(spr_refresh);
+            _h = sprite_get_height(spr_refresh);
+            if (point_in_rectangle(_mx, _my, _x, _y, _x+_w, _y+_h)) {
+                if (mouse_check_button_pressed(mb_left)) {
+                    clicked ??= -1;
+                }
+            }
+            draw_sprite(spr_refresh, 0, _x, _y);
+        }
+        
     } else {
         
         draw_set_font(fnt_game);

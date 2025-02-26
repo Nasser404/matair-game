@@ -5,8 +5,8 @@
   "isDnD":false,
   "name":"__viewer__",
   "parent":{
-    "name":"__old__",
-    "path":"folders/Scripts/__construtors__/__old__.yy",
+    "name":"__server__client__",
+    "path":"folders/Scripts/__construtors__/__old__/__server__client__.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

@@ -1,8 +1,16 @@
 /// @description Insérez la description ici
+refresh_cooldown = max(0, refresh_cooldown-1);
+
 if (!global.vk.is_closed()) clicked = undefined;
 switch (clicked) {
+    
+    case -1 : // REFRESH BUTTON
+    player_send_packet({"type" : MESSAGE_TYPE.ORB_LIST});
+    clicked = undefined;
+    refresh_cooldown = 3 *60;
+    break;
     case noone : // BACK BUTTON
-    if (menu_page == 0) room_goto(rm_menu); 
+    if (menu_page == 0) or (global.client == undefined) room_goto(rm_menu); 
     else menu_page = 0;
         
     clicked = undefined;
@@ -11,18 +19,23 @@ switch (clicked) {
     case undefined :
         break;
     
-    case 0 : // CONTINUE BUTTON 
+    case 0 : // CONTINUE BUTTON
+        var _my_orb_id = global.orb_data[$ "id"];
+        player_send_packet({"type" : MESSAGE_TYPE.ORB_CONTINUE_GAME, "id" : _my_orb_id});
+        clicked = undefined;
         break;
     
     case 1 : // NEW GAME BUTTON 
     menu_page = 1;
-    
-    
     player_send_packet({"type" : MESSAGE_TYPE.ORB_LIST});
     clicked = undefined;
     break;
     
     case 2 : // END GAME BUTTON
+        var _my_orb_id = global.orb_data[$ "id"];
+        player_send_packet({"type" : MESSAGE_TYPE.ORB_END_GAME, "id" : _my_orb_id});
+        room_goto(rm_menu);
+        clicked = undefined;
         break;
     
     

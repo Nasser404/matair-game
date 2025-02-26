@@ -15,38 +15,37 @@
 #macro ORB_CODE_LENGHT 4
 
 enum MESSAGE_TYPE {
-    IDENTIFICATION,
+    IDENTIFICATION  = 0 ,           
     
-    PING,
-    PONG,
+    PING            = 1,
+    PONG            = 2,
     
-    GAME_DATA,
-    GAME_INFO,
-    GAME_DISCONNECT,
+    GAME_DATA       = 3,
+    GAME_INFO       = 4,
+    GAME_DISCONNECT = 5,
     
-    ORB_DATA,
-    ORB_RESET,
+    ORB_DATA        = 6,
+    ORB_RESET       = 7,
     
-    ORB_CONNECT,
-    PLAYER_CONNECT,
-    VIEWER_CONNECT,
+    ORB_CONNECT     = 8,
+    PLAYER_CONNECT  = 9,
+    VIEWER_CONNECT  = 10,
 
-    ORB_LIST,
-    GAME_LIST,
+    ORB_LIST        = 11,
+    GAME_LIST       = 12,
     
-    DISCONNECT_REASON,
+    DISCONNECT_REASON=13,
     
-    ASK_MOVE,
-    MOVE,
+    ASK_MOVE        = 14,
+    MOVE            = 15,
     
-    ORB_NEW_GAME,
-    ORB_CONTINUE_GAME,
-    ORB_END_GAME,
+    ORB_NEW_GAME    = 16,
+    ORB_CONTINUE_GAME=17,
+    ORB_END_GAME    = 18,
     
-    DISCONNECT_FROM_SERVER,
-    
-};
-
+    DISCONNECT_FROM_SERVER = 19 , 
+    INFORMATION            = 20 ,
+}
 enum CLIENT_TYPE {
     ORB,
     PLAYER,

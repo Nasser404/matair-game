@@ -9,7 +9,7 @@ function player_client() constructor {
     
     /////// SETTING UP TIMEOUT SYSTEM ///////////
     timeout = function() { instance_destroy(obj_client);}
-    timeout_timer = time_source_create(time_source_global, 10000, time_source_units_seconds, timeout)
+    timeout_timer = time_source_create(time_source_global, 10, time_source_units_seconds, timeout)
     time_source_start(timeout_timer);
     ///////////////////////////////////////////////
     
@@ -24,7 +24,8 @@ function player_client() constructor {
         show_debug_message("closing client");
         network_destroy(self.client);
     }
-
+    
+  
     /// @desc Handle data received
     /// @param {string} ip 
     /// @param {int} port
@@ -34,12 +35,13 @@ function player_client() constructor {
         var _data, _orb, _client, _orb_code;
 
         var _json_data  = buffer_read(_buffer, buffer_string);
-        show_debug_message(_json_data)
+        
         _data       = json_parse(_json_data);
-        show_debug_message($"Data received from server({_socket}) {_ip}:{_port} - {_data}");
+        
+        
         
         var _type = _data[$ "type"];
-        
+        if (_type!= MESSAGE_TYPE.PING) show_debug_message(_json_data)
         
         switch (_type) {
             case MESSAGE_TYPE.IDENTIFICATION:
@@ -89,6 +91,11 @@ function player_client() constructor {
             case MESSAGE_TYPE.GAME_INFO :
                 handle_game_info(_socket, _data);
             break;
+            
+            case MESSAGE_TYPE.DISCONNECT_REASON :
+                show_message($"Disconnected beacause of : {_data[$ "reason"]}")
+                instance_destroy(obj_client);
+            break
             
         }
     }
@@ -188,6 +195,7 @@ function player_client() constructor {
             break;
             
             case network_type_disconnect :
+                show_message("disconnected !")
                 _ip         = async_load[? "ip"];
                 _port       = async_load[? "port"];
                 _socket     = async_load[? "socket"];
