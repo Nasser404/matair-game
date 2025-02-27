@@ -4,21 +4,24 @@ if (!global.vk.is_closed()) clicked = undefined;
 switch (clicked) {
     
     case -2 : // REFRESH BUTTON 
-        player_send_packet({"type" : MESSAGE_TYPE.GAME_LIST})
-        refresh_cooldown = 5 * 60;
+        player_send_packet({"type" : MESSAGE_TYPE.GAME_LIST})// NETWORKING //
+        refresh_cooldown = 5 * 60; 
         clicked = undefined;
     break;
     
     
     case -1 : // BACK BUTTON
-        room_goto(rm_menu);
+        if (global.chat_up) global.chat_up = false;
+        else room_goto(rm_menu);
         clicked = undefined;
     break;
     
     case undefined :
         break;
     default: // CLICKED ON A GAME
-        show_message(global.game_list[clicked])
+        var _selected_game = global.game_list[clicked];
+        var _game_id       = _selected_game[$"game_id"];
+        player_send_packet({"type" : MESSAGE_TYPE.VIEWER_CONNECT, "game_id" : _game_id}); // NETWORKING //
         clicked = undefined;
     break;
 }

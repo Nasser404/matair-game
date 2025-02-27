@@ -7,26 +7,7 @@ function virtual_keyboard() constructor  {
     
     self.hidden = true;
     self.closed = true;
-    function hide() {
-        self.xto = 8;
-        self.yto = 540;
-        self.hidden = true;
-        if (close_script!=undefined) close_script(); 
-            
-        if (self.binded_var!=undefined) variable_global_set(binded_var, current_string);
-        
-        current_string = "";    
-    }
-    
-    function show() {
-        self.xto = 8;
-        self.yto = 256;
-        self.hidden = false;
-        self.closed = false;
-    }
-    function set_close_script(_script) {self.close_script = _script};
-    function set_validation_script(_script) {self.validate_script = _script};
-    
+
     self.current_string     = "";
     self.draw_string        = "";
     self.clicked            = undefined;
@@ -40,6 +21,36 @@ function virtual_keyboard() constructor  {
     
     validate_script = undefined;
     close_script    = undefined;
+    validate = false;
+    
+    function hide() {
+        self.xto = 8;
+        self.yto = 540;
+        self.hidden = true;
+        
+            
+        if (self.binded_var!=undefined) variable_global_set(binded_var, current_string);
+            
+        if (close_script!=undefined) close_script(); 
+            
+        if (validate) {
+            if (validate_script!=undefined) validate_script();
+            validate = false;
+        }
+        validate_script = undefined;
+        close_script    = undefined;
+        self.binded_var = undefined;
+        current_string = "";    
+    }
+    
+    function show() {
+        self.xto = 8;
+        self.yto = 256;
+        self.hidden = false;
+        self.closed = false;
+    }
+    function set_close_script(_script) {self.close_script = _script};
+    function set_validation_script(_script) {self.validate_script = _script};
     
     function bind_to_var(_var_name) {
         self.binded_var = _var_name;
@@ -79,9 +90,11 @@ function virtual_keyboard() constructor  {
             break;
             
             case 1 : // VALIDATE
+
+                validate = true;
                 hide(); 
                 clicked = undefined;
-                if (validate_script!=undefined) validate_script();
+                
             break;
             
             case 3 : // DELETE

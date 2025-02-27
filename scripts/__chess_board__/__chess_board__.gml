@@ -320,7 +320,7 @@ function chess_board(_x, _y, _sprite_index, _view = piece_color.white, _verbose 
                     "color": global.color,
                 }
                 global.asked_a_move = true;
-                player_send_packet(_data);
+                player_send_packet(_data);// NETWORKING //
             }
         }    
     }

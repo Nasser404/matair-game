@@ -81,7 +81,8 @@ function player_client() constructor {
                 handle_game_list(_socket, _data);
             break
             case MESSAGE_TYPE.GAME_DATA :
-                handle_game_data(_socket, _data);
+                if (global.client_type == CLIENT_TYPE.PLAYER) handle_game_data(_socket, _data);
+                else handle_game_data_viewer(_socket, _data)    
             break;
             
             case MESSAGE_TYPE.MOVE  :
@@ -93,10 +94,18 @@ function player_client() constructor {
             break;
             
             case MESSAGE_TYPE.DISCONNECT_REASON :
-                show_message($"Disconnected beacause of : {_data[$ "reason"]}")
+                //show_message($"Disconnected beacause of : {_data[$ "reason"]}")
                 instance_destroy(obj_client);
             break
             
+            case MESSAGE_TYPE.GAME_CHAT :
+                var _message = _data[$ "message"]
+                if (global.game_chat == undefined) global.game_chat = [_message];
+                else array_push(global.game_chat, _message);
+                    
+                global.new_message_indicator = true;
+                        
+            break;   
         }
     }
     function handle_game_list(_socket, _data) {
@@ -105,19 +114,21 @@ function player_client() constructor {
     function handle_game_info(_socket, _data) {
         var _info                   = _data[$ "info"];
         global.game_info = _info
+        global.game_chat = _info[$"chat_history"]
         if (global.game_board!=undefined) global.game_board.load_info(_info);
     }
     function handle_game_data(_socket, _data){
-        
+            
     
-        var _info                   = _data[$ "info"];
-        var _game_data              = _data[$ "data"]; 
-        
-        var _server_board_string           = _data[$ "board_string"];
-        var _my_assigned_color      = _data[$ "color"];
+        var _info                  = _data[$ "info"];
+        var _game_data             = _data[$ "data"]; 
+        var _server_board_string   = _data[$ "board_string"];
+        var _my_assigned_color     = _data[$ "color"];
         var _force_update          = _data[$ "force_update"]
         
         global.game_info = _info;
+        global.game_chat = _info[$"chat_history"]
+        
         if (!global.in_game) {
             global.game_board = new chess_board(7,110, spr_chess_board, _my_assigned_color);
             global.game_board.init_board();
@@ -137,16 +148,32 @@ function player_client() constructor {
                 global.game_board.calculate_legal_moves(global.color);
             }
         }
-        
    
+    }
+    
+    function handle_game_data_viewer(_socket, _data) {
+        var _info                  = _data[$ "info"];
+        var _game_data             = _data[$ "data"]; 
+        var _game_chat             = _data[$"chat_history"]
+        var _server_board_string   = _data[$ "board_string"];
+        
+        global.game_info           = _info;
+         global.game_chat = _info[$"chat_history"]
+        
+        if (global.game_board == undefined) {
+            global.game_board = new chess_board(7,110, spr_chess_board);
+            global.game_board.init_board();
+        }
+        global.game_board.load_info(_info);
+        global.game_board.load_board_data(_game_data);
     }
     
     function handle_network_move(_socket, _data) {
         var _from = _data[$ "from"];
         var _to   = _data[$ "to"];
-        if (global.in_game) and (global.game_board != undefined) {
+        if (global.game_board != undefined) {
             global.game_board.move_piece(_from, _to);
-            global.asked_a_move = false;
+            if (global.in_game) global.asked_a_move = false;
         }
         
     }

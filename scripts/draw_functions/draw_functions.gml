@@ -83,6 +83,38 @@ function find_orb_option(_orb_data) {
     
     
 }
+
+function sprite_clicked(_x, _y, _sprite) {
+    
+    var _mx = device_mouse_x_to_gui(0);
+    var _my = device_mouse_y_to_gui(0);
+    
+    var _w = sprite_get_width(_sprite);
+    var _h = sprite_get_height(_sprite);
+    if (point_in_rectangle(_mx, _my, _x, _y, _x+_w, _y+_h)) {
+        if (mouse_check_button_pressed(mb_left)) {
+            return true;
+        }
+    }
+    
+    return false;
+    
+    
+    
+    
+}
+function zone_clicked(_x, _y, _w, _h) {
+    var _mx = device_mouse_x_to_gui(0);
+    var _my = device_mouse_y_to_gui(0);
+    
+    if (point_in_rectangle(_mx, _my, _x, _y, _x+_w, _y+_h)) {
+        if (mouse_check_button_pressed(mb_left)) {
+            return true;
+        }
+    }
+    
+    return false;
+}
 function draw_game_info(_x, _y, _game_info = {}) {
     /*var _game_info = {
     "game_id"           : self.game_unique_id,

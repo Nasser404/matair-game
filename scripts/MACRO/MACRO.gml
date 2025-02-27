@@ -45,6 +45,8 @@ enum MESSAGE_TYPE {
     
     DISCONNECT_FROM_SERVER = 19 , 
     INFORMATION            = 20 ,
+    
+    GAME_CHAT              = 21,
 }
 enum CLIENT_TYPE {
     ORB,
@@ -90,3 +92,17 @@ function get_unique_id() {
     else return array_pop(global.unique_id);    
         
 }
+
+
+function id_generator() {
+    var _chars = "abcdefghijklmnopqrstuvwxyz1234567890"
+    var _id = ""
+    repeat(2) {
+        _id += string_char_at(_chars, irandom_range(1, string_length(_chars)))
+        
+    }
+    return _id;    
+}
+
+
+

@@ -7,9 +7,6 @@
       "option_html5_icon":"fav.ico",
       "option_html5_index":"index.html",
     },
-    "SERVER":{
-      "option_html5_icon":"fav.ico",
-    },
   },
   "name":"HTML5",
   "option_html5_allow_fullscreen":true,
