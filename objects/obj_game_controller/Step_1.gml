@@ -5,3 +5,11 @@ if (os_browser != browser_not_a_browser) {
     
     }
 }
+
+if (global.current_pop_message == undefined) { 
+    pop_message_buffer = max(0, pop_message_buffer-1);
+    if ((array_length(global.pop_message_queue)>0) and (pop_message_buffer<=0)) {
+        global.current_pop_message = array_shift(global.pop_message_queue);
+        pop_message_buffer = 5;
+    }
+}

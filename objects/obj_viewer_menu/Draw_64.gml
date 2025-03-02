@@ -9,7 +9,7 @@ draw_set_halign(fa_center);
 draw_set_valign(fa_middle);
 ////////////////////////////////////////// BACK BUTTON/////////////////////////
 
-_x = 16;
+_x = 8;
 _y = 432;
 
 var _w = sprite_get_width(spr_back_menu);
@@ -47,7 +47,9 @@ if (global.game_list == undefined) { /// IF NOT CONENCTED TO SERVER
     _x            = 32;
     _y            = 96;
     
-    var _game_list = array_filter(global.game_list, function(_ele, _ind) {return _ele[$ "status"] == 0})
+    var _game_list = global.game_list;/*array_filter(global.game_list, function(_game, _ind) {
+        return (_game[$ "status"] == GAME_STATUS.on_going) or (!_game[$ "virtual_game"]);
+    })*/
     
     for (var i = list_index, n = array_length(_game_list); i < min(list_index + max_list_index, n); i++) {
         var _w = sprite_get_width(spr_game_info);

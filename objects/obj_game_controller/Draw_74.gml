@@ -28,7 +28,7 @@ if (global.game_board != undefined) {
     var _x = 8;
     var _y = 8;
     
-    if (sprite_clicked(_x, _y, spr_chat_button)) {
+    if (sprite_clicked(_x, _y, spr_chat_button)) and (global.current_pop_message == undefined) {
         if (!global.chat_up)
             {
                 global.chat_up = true
@@ -64,7 +64,7 @@ if (global.chat_up) {
     ///////////////////////////// CHAT BOX /////////////////////////////////////////////////////////////
     draw_roundrect_ext(_x1, _y1, _x2, _y2, 10, 10, false); // DRAW BOX
     
-    if (zone_clicked(_x1, _y1, _w, _h) and chat_cliked_buffer <=0) {
+    if (zone_clicked(_x1, _y1, _w, _h) and chat_cliked_buffer <=0) and (global.current_pop_message == undefined) {
         
         global.vk.set_validation_script(
         function() {

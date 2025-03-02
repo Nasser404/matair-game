@@ -1,6 +1,6 @@
 #macro TILE 32
 
-function chess_board(_x, _y, _sprite_index, _view = piece_color.white, _verbose = true, _server_board = false, _local = false) constructor {
+function chess_board(_x, _y, _sprite_index, _view = piece_color.white, _verbose = true, _local = false) constructor {
     
     self.grid = array_create_ext(8, function() {return array_create(8, noone);})
     
@@ -23,13 +23,13 @@ function chess_board(_x, _y, _sprite_index, _view = piece_color.white, _verbose 
     self.verbose = _verbose;
     
     self.is_false_board = false;
-    self.is_server_board = _server_board;
     self.local = _local;
     self.game_ended = false;
     self.winner = noone;
     self.possible_moves = [[], []];
     self.square_reached = [[], []];
     self.last_move      = undefined;
+    self.orbs_status     = undefined;
     
     function board_view(_value) {
         return (self.view == piece_color.white) ? _value : 7 - _value;
@@ -122,10 +122,11 @@ function chess_board(_x, _y, _sprite_index, _view = piece_color.white, _verbose 
         self.players_names = {"white" : _info[$ "white_player"] ?? "?",
                               "black" : _info[$ "black_player"] ?? "?"}
         
-        self.playing_orb   =    {"white" : _info[$ "white_orb"] ?? "?",
+        self.playing_orb    =    {"white" : _info[$ "white_orb"] ?? "?",
                                 "black" : _info[$ "black_orb"]  ?? "?"}
-        self.game_ended = _info[$ "status"];
-        self.winner     = _info[$ "winner"];
+        self.game_ended     = _info[$ "status"];
+        self.winner         = _info[$ "winner"];
+        self.orbs_status    = _info[$ "orbs_status"]
         
     }
     function check_possible_moves(_col) {
@@ -168,7 +169,6 @@ function chess_board(_x, _y, _sprite_index, _view = piece_color.white, _verbose 
     }
 
     function draw() { 
-        if (self.is_server_board) return;
             
         
         // DRAW BOARD 
@@ -257,8 +257,9 @@ function chess_board(_x, _y, _sprite_index, _view = piece_color.white, _verbose 
     
     ///////////////////////////////////////////////////////////// BOARD CLICKED ///////////////////////////////////////////////////////
     function clicked(_x, _y) {
-        if ((self.is_server_board) or (global.color != turn) or global.asked_a_move or game_ended) and (!local) return;
+        if ((global.color != turn) or global.asked_a_move or game_ended or (global.current_pop_message != undefined)) and (!local) return;
             
+    
         var _relative_x = _x - self.x;
         var _relative_y = _y - self.y;
         
@@ -298,6 +299,7 @@ function chess_board(_x, _y, _sprite_index, _view = piece_color.white, _verbose 
                     //self.selected_piece.filter_moves()
             }
         }
+        
     }
     ////////////////////////////////////////////////////////////////////////////////////////////
     function chance_view() {
@@ -310,6 +312,12 @@ function chess_board(_x, _y, _sprite_index, _view = piece_color.white, _verbose 
     function ask_move_piece(_from, _to) {
         if (local) or (is_false_board) move_piece(_from, _to);
         else {
+            
+            if (self.orbs_status != undefined) and ((self.orbs_status[0] != ORB_STATUS.IDLE) or ((self.orbs_status[1] != ORB_STATUS.IDLE))) { // ORB BUSY
+                    enqueue_pop_message(POP_MESSAGE_TYPE.SERVER_MESSAGE, "ERROR : ORB ARE BUSY")
+                    return; // EXIT (NO NEED TO ASK NETWORK)
+            }
+            
             if (global.color == turn) {
                 
                 var _data = {
@@ -644,7 +652,8 @@ function chess_board(_x, _y, _sprite_index, _view = piece_color.white, _verbose 
         var _sep = 8;
         
         
-        // BLACK
+        //////////////// BLACK ////////////////
+        
         var _bx = self.x + _xoffset;
         var _by = self.y + _view_offset[self.view];
         
@@ -654,7 +663,7 @@ function chess_board(_x, _y, _sprite_index, _view = piece_color.white, _verbose 
                 
             draw_sprite(spr_black_profile, 0, _bx, _by); // PROFILE
             draw_text(_bx+ _name_offset,  _by, $"{self.players_names[$ "black"]}" + _orb_name); // NAME
-        } else draw_text(_bx+ _name_offset,  _by, "waiting for players"); // NAME
+        } else draw_text(_bx,  _by, "waiting for players"); // NAME
             
         
         var _n = 0;
@@ -670,9 +679,12 @@ function chess_board(_x, _y, _sprite_index, _view = piece_color.white, _verbose 
             }
             
         }
+        if (self.orbs_status!=undefined) {
+            var _status = self.orbs_status[piece_color.black];
+            draw_sprite(spr_orb_status, _status, _bx + 210, _by - 16)
+        }
         
-        
-        // White
+        //////////////// WHITE  ////////////////
         var _wx = self.x + _xoffset;
         var _wy = self.y + _view_offset[!self.view];
         
@@ -681,7 +693,7 @@ function chess_board(_x, _y, _sprite_index, _view = piece_color.white, _verbose 
             if (self.playing_orb[$ "white"] != "") _orb_name = $" - {self.playing_orb[$ "white"]}"
             draw_sprite(spr_white_profile, 0, _wx, _wy); // PROFILE
             draw_text(_wx+_name_offset,  _wy,  $"{self.players_names[$ "white"]}" + _orb_name) // NAME
-        } else draw_text(_wx+_name_offset,  _wy,  "waiting for players") // NAME
+        } else draw_text(_wx,  _wy,  "waiting for players") // NAME
         
         _n = 0;
         for (var i = 0; i < 6; i++) {
@@ -695,7 +707,10 @@ function chess_board(_x, _y, _sprite_index, _view = piece_color.white, _verbose 
             }
             
         }
-        
+        if (self.orbs_status!=undefined) {
+            var _status = self.orbs_status[piece_color.white];
+            draw_sprite(spr_orb_status, _status, _wx + 210, _wy - 16)
+        }
        
         if (self.game_ended) {
             draw_set_alpha(0.7);
@@ -726,7 +741,7 @@ function chess_board(_x, _y, _sprite_index, _view = piece_color.white, _verbose 
     
     function play_sfx(_sfx, _priority = 0) {
  
-        if (!self.is_false_board and !self.is_server_board) audio_play_sound(_sfx, _priority, 0);
+        if (!self.is_false_board) audio_play_sound(_sfx, _priority, 0);
     }
     
 

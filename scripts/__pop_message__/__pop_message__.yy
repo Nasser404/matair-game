@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"__pop_message__",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"__pop_message__",
+  "parent":{
+    "name":"__construtors__",
+    "path":"folders/Scripts/__construtors__.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

@@ -1,9 +1,3 @@
-function player_send_packet(_data) {
-    if (global.client!=undefined) {
-        global.client.send_packet(global.client.client, _data);
-    }
-}
-
 function player_client() constructor {
     self.client         = -1;
     
@@ -95,7 +89,7 @@ function player_client() constructor {
             
             case MESSAGE_TYPE.DISCONNECT_REASON :
                 //show_message($"Disconnected beacause of : {_data[$ "reason"]}")
-                instance_destroy(obj_client);
+                handle_disconnect_reason(_socket, _data)
             break
             
             case MESSAGE_TYPE.GAME_CHAT :
@@ -106,7 +100,43 @@ function player_client() constructor {
                 global.new_message_indicator = true;
                         
             break;   
+            
+            case MESSAGE_TYPE.INFORMATION :
+                handle_server_information(_socket, _data)
+            break;
+            
+            
         }
+    }
+    
+    
+    function handle_server_information(_socket, _data) {
+        var _information = _data[$ "information"];
+        
+        switch (_information) {
+            case INFORMATION_TYPE.ORB_NOT_READY     : enqueue_pop_message(POP_MESSAGE_TYPE.SERVER_MESSAGE, "ERROR : ORB ARE BUSY") break;
+            case INFORMATION_TYPE.NOT_GAME_PLAYER   : enqueue_pop_message(POP_MESSAGE_TYPE.SERVER_MESSAGE, "YOU ARE NOT A PLAYER")  break;
+            case INFORMATION_TYPE.NOT_PLAYER_TURN   : enqueue_pop_message(POP_MESSAGE_TYPE.SERVER_MESSAGE, "ITS NOT YOUR TURN ")    break;
+            case INFORMATION_TYPE.MOVE_NOT_LEGAL    : enqueue_pop_message(POP_MESSAGE_TYPE.SERVER_MESSAGE, "MOVE IS NOT LEGAL")     break;
+        }
+        if (global.in_game) global.asked_a_move = false;
+        
+    }
+    function handle_disconnect_reason(_socket, _data) {
+        var _reason = _data[$ "reason"];
+            
+            //if (instance_exists(obj_client)) instance_destroy(obj_client);
+                
+            switch (_reason) {
+                case DISCONNECT_REASONS.GAME_NOT_JOINABLE       : enqueue_pop_message(POP_MESSAGE_TYPE.DISCONNECTED, "GAME IS NOT JOINABLE")  break;
+                case DISCONNECT_REASONS.INVALID_ORB_CODE        : enqueue_pop_message(POP_MESSAGE_TYPE.DISCONNECTED, "INVALID ORB CODE")      break;
+                case DISCONNECT_REASONS.NO_REASON               : enqueue_pop_message(POP_MESSAGE_TYPE.DISCONNECTED, "fuck you")              break;
+                case DISCONNECT_REASONS.ORB_DISCONNECTED        : enqueue_pop_message(POP_MESSAGE_TYPE.DISCONNECTED, "ORB DISCONNECTED")      break;
+                case DISCONNECT_REASONS.TIMEOUT                 : enqueue_pop_message(POP_MESSAGE_TYPE.DISCONNECTED, "SERVER TIMEOUT")        break;
+
+            }
+        
+        
     }
     function handle_game_list(_socket, _data) {
         global.game_list = _data[$ "game_info_list"]

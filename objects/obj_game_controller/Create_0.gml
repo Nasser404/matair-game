@@ -1,5 +1,8 @@
 /// @description Init
-
+if (instance_number(obj_game_controller)>1) {
+    instance_destroy();
+    exit;
+}
 randomize();
 window_set_color(#302E2B);
 display_set_gui_size(camera_get_view_width(view_camera[0]), camera_get_view_height(view_camera[0]));
@@ -33,5 +36,9 @@ global.chat_up                  = false;
 global.chat_message             = "";
 global.new_message_indicator    = false; 
 
+global.pop_message_queue        = []
+global.current_pop_message      = undefined;
 chat_cliked_buffer = 0;
 temp_id = id_generator() // used for viewer name
+
+pop_message_buffer = 2; // Slight delay between pop message

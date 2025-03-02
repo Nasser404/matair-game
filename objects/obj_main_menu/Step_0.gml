@@ -1,7 +1,7 @@
 /// @description Process button clicked
 
 
-if (!global.vk.is_closed() and ((clicked != 4) or (clicked != 5))) clicked = undefined;
+if (!global.vk.is_closed() and ((clicked != 4) or (clicked != 5)) or (global.current_pop_message!=undefined)) clicked = undefined;
 switch (clicked) {
     case 0 : // PLAY BUTTON
     menu_page = 1;

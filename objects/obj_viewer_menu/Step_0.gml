@@ -1,6 +1,7 @@
 /// @description Insérez la description ici
 refresh_cooldown = max(0, refresh_cooldown-1);
-if (!global.vk.is_closed()) clicked = undefined;
+
+if ((!global.vk.is_closed()) or (global.current_pop_message != undefined)) clicked = undefined;
 switch (clicked) {
     
     case -2 : // REFRESH BUTTON 

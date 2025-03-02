@@ -1,17 +1,8 @@
-#macro IS_SERVER false  
-#macro SERVER:IS_SERVER true
-#macro CLIENT:IS_SERVER false
-
 #macro LOCAL_TEST false
 
 #macro SERVER_IP "88.187.38.210"
 #macro SERVER_PORT 29920
-#macro MAX_CLIENT 32
-#macro KEEP_ALIVE_INTERVAL 3
-#macro MAX_NO_KEEP_ALIVE_REPLY 2
-#macro UNIQUE_ID_LIST_SIZE 1024
 
-#macro DEBUG true
 #macro ORB_CODE_LENGHT 4
 
 enum MESSAGE_TYPE {
@@ -55,6 +46,14 @@ enum CLIENT_TYPE {
     
 }
 
+enum ORB_STATUS {
+    IDLE,
+    OCCUPIED,
+    
+    
+    
+}
+
 enum DISCONNECT_REASONS {
     NO_REASON,
     INVALID_ORB_CODE ,
@@ -67,6 +66,19 @@ enum DISCONNECT_REASONS {
     
     
 }
+
+
+enum INFORMATION_TYPE {
+    ORB_NOT_READY     = 0,
+    MOVE_NOT_LEGAL    = 1,
+    NOT_PLAYER_TURN   = 2,
+    NOT_GAME_PLAYER   = 3
+}
+
+enum GAME_STATUS {
+    on_going = 0,
+    ended    = 1
+}
 function array_remove_value(_array, _value) {
     var _index = array_get_index(_array, _value);
     if (_index != -1) array_delete(_array, _index, 1);
@@ -74,24 +86,6 @@ function array_remove_value(_array, _value) {
 
 
 
-
-global.unique_id = []
-
-function generate_unique_id_list() {
-    var _list = []
-    for (var i = 0; i <= UNIQUE_ID_LIST_SIZE; i++) {
-        array_push(_list, i);
-    }
-    global.unique_id = array_shuffle(_list);
-}
-
-
-
-function get_unique_id() {
-    if (array_length(global.unique_id) == 0) generate_unique_id_list();
-    else return array_pop(global.unique_id);    
-        
-}
 
 
 function id_generator() {

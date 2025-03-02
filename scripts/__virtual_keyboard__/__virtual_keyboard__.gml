@@ -83,6 +83,7 @@ function virtual_keyboard() constructor  {
         var _current_string_lenght = string_length(current_string);
         self.draw_string = self.current_string+ (show_bar ? (_current_string_lenght < max_string_lenght ? "_" : "") : ""); 
         
+        if (global.current_pop_message != undefined)  clicked = undefined;
         switch (clicked) {
             case 0 : // QUIT
                 hide();
@@ -148,7 +149,7 @@ function virtual_keyboard() constructor  {
                 
                 if (mouse_check_button_pressed(mb_left)) {
                     if (point_in_rectangle(_mx, _my, _x, _y, _x+_w, _y+_h)) {
-                        if (!hidden) current_string+=_key;
+                        if (!hidden) and (global.current_pop_message == undefined) current_string+=_key;
                     }
                 }
                 
