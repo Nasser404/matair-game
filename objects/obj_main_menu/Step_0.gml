@@ -1,4 +1,4 @@
-/// @description Process button clicked
+/// @description Handle clicks
 
 
 if (!global.vk.is_closed() and ((clicked != 4) or (clicked != 5)) or (global.current_pop_message!=undefined)) clicked = undefined;

@@ -6,6 +6,7 @@ if (os_browser != browser_not_a_browser) {
     }
 }
 
+// dequeue server message
 if (global.current_pop_message == undefined) { 
     pop_message_buffer = max(0, pop_message_buffer-1);
     if ((array_length(global.pop_message_queue)>0) and (pop_message_buffer<=0)) {

@@ -52,9 +52,6 @@ function draw_simple_orb_info(_x, _y, _orb_info = {}) {
     var _id_x = _x +45;
     var _id_y = _y +13;
     draw_text(_id_x, _id_y, _orb_info[$ "id"]);
-    
-    
-    
 } 
 
 function draw_game_info(_x, _y, _game_info = {}) {

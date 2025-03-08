@@ -1,9 +1,9 @@
 {
   "$GMScript":"v1",
-  "%Name":"MACRO",
+  "%Name":"CONFIG",
   "isCompatibility":false,
   "isDnD":false,
-  "name":"MACRO",
+  "name":"CONFIG",
   "parent":{
     "name":"Scripts",
     "path":"folders/Scripts.yy",

@@ -9,7 +9,7 @@ function player_client() constructor {
     
     function create() {
         self.client = network_create_socket(network_socket_ws);
-        network_connect_raw_async(self.client, SERVER_IP, SERVER_PORT);
+        network_connect_raw_async(self.client, global.SERVER_IP, global.SERVER_PORT);
     }
     
 
@@ -130,7 +130,7 @@ function player_client() constructor {
             switch (_reason) {
                 case DISCONNECT_REASONS.GAME_NOT_JOINABLE       : enqueue_pop_message(POP_MESSAGE_TYPE.DISCONNECTED, "GAME IS NOT JOINABLE")  break;
                 case DISCONNECT_REASONS.INVALID_ORB_CODE        : enqueue_pop_message(POP_MESSAGE_TYPE.DISCONNECTED, "INVALID ORB CODE")      break;
-                case DISCONNECT_REASONS.NO_REASON               : enqueue_pop_message(POP_MESSAGE_TYPE.DISCONNECTED, "fuck you")              break;
+                case DISCONNECT_REASONS.NO_REASON               : enqueue_pop_message(POP_MESSAGE_TYPE.DISCONNECTED, " ")                     break;
                 case DISCONNECT_REASONS.ORB_DISCONNECTED        : enqueue_pop_message(POP_MESSAGE_TYPE.DISCONNECTED, "ORB DISCONNECTED")      break;
                 case DISCONNECT_REASONS.TIMEOUT                 : enqueue_pop_message(POP_MESSAGE_TYPE.DISCONNECTED, "SERVER TIMEOUT")        break;
 

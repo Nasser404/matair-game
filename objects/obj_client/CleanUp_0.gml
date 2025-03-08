@@ -1,9 +1,10 @@
-/// @description Insérez la description ici
+/// @description reset all client var
 
 player_send_packet({"type" : MESSAGE_TYPE.DISCONNECT_FROM_SERVER}); // NETWORKING //
 global.client.close();
 
 global.client            = undefined;
+global.client_type       = undefined;
 
 global.orb_list          = undefined;
 global.orb_data          = undefined;

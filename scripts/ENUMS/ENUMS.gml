@@ -1,10 +1,3 @@
-#macro LOCAL_TEST false
-
-#macro SERVER_IP "88.187.38.210"
-#macro SERVER_PORT 29920
-
-#macro ORB_CODE_LENGHT 4
-
 enum MESSAGE_TYPE {
     IDENTIFICATION  = 0 ,           
     
@@ -67,7 +60,6 @@ enum DISCONNECT_REASONS {
     
 }
 
-
 enum INFORMATION_TYPE {
     ORB_NOT_READY     = 0,
     MOVE_NOT_LEGAL    = 1,
@@ -79,24 +71,3 @@ enum GAME_STATUS {
     on_going = 0,
     ended    = 1
 }
-function array_remove_value(_array, _value) {
-    var _index = array_get_index(_array, _value);
-    if (_index != -1) array_delete(_array, _index, 1);
-}
-
-
-
-
-
-function id_generator() {
-    var _chars = "abcdefghijklmnopqrstuvwxyz1234567890"
-    var _id = ""
-    repeat(2) {
-        _id += string_char_at(_chars, irandom_range(1, string_length(_chars)))
-        
-    }
-    return _id;    
-}
-
-
-

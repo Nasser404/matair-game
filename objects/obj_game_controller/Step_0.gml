@@ -1,9 +1,6 @@
 /// @description Check for import in chess board
 
-
-
 global.vk.step();
-
 
 
 if (global.in_game) and (global.game_board != undefined) and (!global.chat_up) {

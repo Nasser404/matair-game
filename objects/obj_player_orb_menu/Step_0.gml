@@ -1,4 +1,4 @@
-/// @description Insérez la description ici
+/// @description Handle clicks
 refresh_cooldown = max(0, refresh_cooldown-1);
 
 if ((!global.vk.is_closed()) or (global.current_pop_message != undefined)) clicked = undefined;
