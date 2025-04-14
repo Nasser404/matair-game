@@ -5,8 +5,8 @@
   "isDnD":false,
   "name":"__player__client__",
   "parent":{
-    "name":"__construtors__",
-    "path":"folders/Scripts/__construtors__.yy",
+    "name":"Scripts",
+    "path":"folders/Scripts.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

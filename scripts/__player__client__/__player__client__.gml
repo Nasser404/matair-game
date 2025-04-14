@@ -274,8 +274,8 @@ function player_client() constructor {
         
         buffer_seek(_buffer, buffer_seek_start, 0);
         buffer_write(_buffer, buffer_string, _json_data);
-        
-        network_send_raw(_socket, _buffer, 1024, network_send_text);
+ 
+        network_send_raw(_socket, _buffer, buffer_tell(_buffer)-1, network_send_text);
         
         buffer_delete(_buffer);
     }
