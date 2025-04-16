@@ -1,5 +1,5 @@
 {
-  "$GMProject":"v1",
+  "$GMProject":"",
   "%Name":"Spherical chess",
   "AudioGroups":[
     {"$GMAudioGroup":"","%Name":"audiogroup_default","name":"audiogroup_default","resourceType":"GMAudioGroup","resourceVersion":"2.0","targets":-1,},
@@ -24,7 +24,6 @@
     {"$GMFolder":"","%Name":"spr_menu","folderPath":"folders/Sprites/spr_menu.yy","name":"spr_menu","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"spr_virtual_keyboard","folderPath":"folders/Sprites/spr_virtual_keyboard.yy","name":"spr_virtual_keyboard","resourceType":"GMFolder","resourceVersion":"2.0",},
   ],
-  "ForcedPrefabProjectReferences":[],
   "IncludedFiles":[
     {"$GMIncludedFile":"","%Name":"config.ini","CopyToMask":-1,"filePath":"datafiles","name":"config.ini","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
     {"$GMIncludedFile":"","%Name":"icon512_maskable.png","CopyToMask":-1,"filePath":"datafiles","name":"icon512_maskable.png","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
@@ -36,7 +35,7 @@
   "isEcma":false,
   "LibraryEmitters":[],
   "MetaData":{
-    "IDEVersion":"2024.13.0.190",
+    "IDEVersion":"2024.11.0.179",
   },
   "name":"Spherical chess",
   "resources":[
@@ -120,8 +119,8 @@
   "TextureGroups":[
     {"$GMTextureGroup":"","%Name":"Default","autocrop":true,"border":2,"compressFormat":"bz2","ConfigValues":{
         "CLIENT":{
-          "compressFormat":"bz2",
           "groupParent":"null",
+          "compressFormat":"bz2",
           "loadType":"default",
         },
       },"customOptions":"","directory":"","groupParent":null,"isScaled":true,"loadType":"default","mipsToGenerate":0,"name":"Default","resourceType":"GMTextureGroup","resourceVersion":"2.0","targets":-1,},
