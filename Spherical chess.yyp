@@ -101,6 +101,7 @@
     {"id":{"name":"spr_turn_indicator","path":"sprites/spr_turn_indicator/spr_turn_indicator.yy",},},
     {"id":{"name":"spr_validate_key","path":"sprites/spr_validate_key/spr_validate_key.yy",},},
     {"id":{"name":"spr_versus_banner","path":"sprites/spr_versus_banner/spr_versus_banner.yy",},},
+    {"id":{"name":"spr_viewer_number_1","path":"sprites/spr_viewer_number_1/spr_viewer_number_1.yy",},},
     {"id":{"name":"spr_viewer_number","path":"sprites/spr_viewer_number/spr_viewer_number.yy",},},
     {"id":{"name":"spr_white_pieces","path":"sprites/spr_white_pieces/spr_white_pieces.yy",},},
     {"id":{"name":"spr_white_profile","path":"sprites/spr_white_profile/spr_white_profile.yy",},},

@@ -6,6 +6,7 @@ switch (clicked) {
     case 0 : // PLAY BUTTON
     menu_page = 1;
     clicked = undefined;
+    layer_set_visible("info", true);
     break;
         
     case 1 : // SPECTATE BUTTON
@@ -41,6 +42,7 @@ switch (clicked) {
     case 6 : /// BACK BUTTON
         menu_page = 0;
         clicked = undefined;
+    layer_set_visible("info", false);
     break;
     
     
