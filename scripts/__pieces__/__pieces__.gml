@@ -147,36 +147,38 @@ function pawn(_pos, _color, _board = undefined) : piece("Pawn", _pos, piece_type
             if (!on_team([_x - 1, _y+ forward])) add_move([_x - 1, _y+ forward]); 
         } 
         
-        // en passant right
-        if (!cell_empty( [_x + 1, _y])) {
- 
-            var _piece = get_piece( [_x + 1, _y]);
-            if (_piece.get_color() != self.color) {
-                if (_piece.get_type() == piece_type.pawn) {
-
-                    if (_piece.get_pos()[1] == _piece.get_last_pos()[1]+2*_piece.forward) {
-                        add_move([_x + 1, _y + forward]);
-                        self.en_passant =  wrap_pos([_x + 1, _y + forward]);
+        if (false) { // DISABELED en passant
+            // en passant right
+            if (!cell_empty( [_x + 1, _y])) {
+     
+                var _piece = get_piece( [_x + 1, _y]);
+                if (_piece.get_color() != self.color) {
+                    if (_piece.get_type() == piece_type.pawn) {
+    
+                        if (_piece.get_pos()[1] == _piece.get_last_pos()[1]+2*_piece.forward) {
+                            add_move([_x + 1, _y + forward]);
+                            self.en_passant =  wrap_pos([_x + 1, _y + forward]);
+                        }
+                    }
+                }
+            }
+        // en passant left
+            if (!cell_empty( [_x - 1, _y])) {
+     
+                var _piece = get_piece( [_x - 1, _y]);
+                if (_piece.get_color() != self.color) {
+                    if (_piece.get_type() == piece_type.pawn) {
+    
+                        if (_piece.get_pos()[1] == _piece.get_last_pos()[1]+2*_piece.forward) 
+                        {
+                            add_move([_x - 1, _y + forward]); 
+                            self.en_passant =  wrap_pos([_x - 1, _y + forward]);
+                        }
                     }
                 }
             }
         }
-    // en passant left
-        if (!cell_empty( [_x - 1, _y])) {
- 
-            var _piece = get_piece( [_x - 1, _y]);
-            if (_piece.get_color() != self.color) {
-                if (_piece.get_type() == piece_type.pawn) {
-
-                    if (_piece.get_pos()[1] == _piece.get_last_pos()[1]+2*_piece.forward) 
-                    {
-                        add_move([_x - 1, _y + forward]); 
-                        self.en_passant =  wrap_pos([_x - 1, _y + forward]);
-                    }
-                }
-            }
-        }
-        
+            
         
         
         
@@ -433,9 +435,9 @@ function king(_pos, _color,_board = undefined) : piece("King", _pos, piece_type.
             if (!on_team( _possible_moves[i])) add_move(_possible_moves[i]);
         }
         
-        // Right caste
+        // Right caste (DISABELED)
         var _rook,_line_clear, _line_safe;
-        if (!self.has_moved) {
+        if (false) { // !self.has_moved
             _rook  = get_piece( [_x + 3, _y]);
             if (_rook != noone) {
                 if ((!_rook.has_moved) and (_rook.get_type() == piece_type.rook)) {
@@ -453,8 +455,8 @@ function king(_pos, _color,_board = undefined) : piece("King", _pos, piece_type.
             
         }
         
-        // Left castle
-        if (!self.has_moved) {
+        // Left castle (DISABELED)
+        if (false) {// !self.has_moved
             _rook  = get_piece( [_x - 4, _y]);
             if (_rook != noone) {
                 if ((!_rook.has_moved) and (_rook.get_type() == piece_type.rook)) {
