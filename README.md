@@ -1,5 +1,11 @@
 # Mat@ir Game
-
+<!-- Badges Section -->
+<p align="left">
+  <a href="https://gamemaker.io" target="_blank">
+    <img src="https://img.shields.io/badge/Made%20with-GameMaker-blue.svg" alt="Made with GameMaker">
+  </a>
+  <img src="https://img.shields.io/badge/Platform-HTML5-orange.svg" alt="Platform: HTML5">
+</p>
 An online multiplayer game developed with GameMaker for the Mat@ir project.
 
 <picture>
