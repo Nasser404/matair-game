@@ -4,12 +4,14 @@ function player_client() constructor {
     /////// SETTING UP TIMEOUT SYSTEM ///////////
     timeout = function() { instance_destroy(obj_client);}
     timeout_timer = time_source_create(time_source_global, 10, time_source_units_seconds, timeout)
-    time_source_start(timeout_timer);
+    
     ///////////////////////////////////////////////
     
+    ///@desc Create client
     function create() {
         self.client = network_create_socket(network_socket_ws);
         network_connect_raw_async(self.client, global.SERVER_IP, global.SERVER_PORT);
+        time_source_start(timeout_timer);
     }
     
 
@@ -22,24 +24,20 @@ function player_client() constructor {
   
     /// @desc Handle data received
     /// @param {string} ip 
-    /// @param {int} port
+    /// @param {Int} port
     /// @param {Id.socket} socket
     /// @param {string} data
     function handle_data(_ip, _port, _socket, _buffer) {
         var _data, _orb, _client, _orb_code;
-
         var _json_data  = buffer_read(_buffer, buffer_string);
-        
         _data       = json_parse(_json_data);
-        
-        
         
         var _type = _data[$ "type"];
         if (_type!= MESSAGE_TYPE.PING) show_debug_message(_json_data)
         
         switch (_type) {
             case MESSAGE_TYPE.IDENTIFICATION:
-                _data = {"type" : MESSAGE_TYPE.IDENTIFICATION};
+                _data = {"type" : MESSAGE_TYPE.IDENTIFICATION, "identifier":CLIENT_TYPE.VIEWER};
                 if (room = rm_player) _data[$ "identifier"] = CLIENT_TYPE.PLAYER;
                 else _data[$ "identifier"] = CLIENT_TYPE.VIEWER;
                 send_packet(_socket, _data);
