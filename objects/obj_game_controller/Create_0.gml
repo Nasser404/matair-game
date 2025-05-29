@@ -43,3 +43,6 @@ chat_cliked_buffer = 0;
 temp_id = id_generator() // used for viewer name
 
 pop_message_buffer = 2; // Slight delay between pop message
+
+
+global.server_ver = "";

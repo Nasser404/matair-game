@@ -5,6 +5,7 @@ clicked         = undefined;
 current_writing = undefined;
 can_play        = false;
 
+
 function main_menu() {
     // TITLE
     var _title_x = 134;
@@ -38,6 +39,21 @@ function main_menu() {
         draw_sprite(_sprite, 0, _x, _y);
         _y+=_h+16;
     }
+    draw_set_halign(fa_left);
+    draw_set_valign(fa_top);
+    draw_set_font(fnt_small_info);
+    
+    //// DRAW GAME AND SERVER VERSION
+    var _col = c_white;
+    if (global.server_ver != "") {
+        if (global.server_ver != GAME_VER) _col = c_red;
+        else _col = c_lime;
+    }
+    draw_set_color(_col);
+    
+    draw_text(8, 448, $"v {GAME_VER}");
+    if (global.server_ver != "") draw_text(8, 434, $"server {global.server_ver}");
+    draw_set_color(c_white);    
 }
 
 function player_join_menu() {

@@ -37,6 +37,10 @@ function player_client() constructor {
         
         switch (_type) {
             case MESSAGE_TYPE.IDENTIFICATION:
+                if (struct_exists(_data, "server_ver")) {
+                    global.server_ver = _data[$ "server_ver"];
+                } else global.server_ver = "pre 1.0";
+                    
                 _data = {"type" : MESSAGE_TYPE.IDENTIFICATION, "identifier":CLIENT_TYPE.VIEWER};
                 if (room = rm_player) _data[$ "identifier"] = CLIENT_TYPE.PLAYER;
                 else _data[$ "identifier"] = CLIENT_TYPE.VIEWER;
