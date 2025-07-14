@@ -1,6 +1,18 @@
 function virtual_keyboard() constructor  {
-    self.x = 8;
-    self.y = 540;
+    
+    
+    self.show_pos = {
+        x : 7,
+        y :  312,
+    }
+    
+    self.hide_pos = {
+        x : 7,
+        y : 540,
+    }
+    
+    self.x = hide_pos.x;
+    self.y = hide_pos.y;
     
     self.xto = self.x;
     self.yto = self.y;
@@ -18,14 +30,14 @@ function virtual_keyboard() constructor  {
     self.show_bar_timer = time_source_create(time_source_game, 45, time_source_units_frames, bar_timer, [], -1);
     time_source_start(self.show_bar_timer)
     
-    
+    self.keyboard_del_cooldown = 10;
     validate_script = undefined;
     close_script    = undefined;
     validate = false;
     
     function hide() {
-        self.xto = 8;
-        self.yto = 540;
+        self.xto = hide_pos.x;
+        self.yto = hide_pos.y;
         self.hidden = true;
         
             
@@ -44,8 +56,8 @@ function virtual_keyboard() constructor  {
     }
     
     function show() {
-        self.xto = 8;
-        self.yto = 256;
+        self.xto = show_pos.x;
+        self.yto = show_pos.y;
         self.hidden = false;
         self.closed = false;
     }
@@ -71,6 +83,8 @@ function virtual_keyboard() constructor  {
     
     
     function step() {
+  
+    
         if (hidden) clicked = undefined;
             
         if (point_distance(self.x, self.y, self.xto, self.yto) < 10) {
@@ -111,8 +125,42 @@ function virtual_keyboard() constructor  {
         }
         
         
+        self.keyboard_del_cooldown--;
+        
+       #region KEYBOARD SUPPORT
+        if (!hidden) and (global.current_pop_message == undefined) {    
+            if (keyboard_check_pressed(vk_anykey)) {
+                if (is_char_alphanum(keyboard_string))  current_string += string_upper(keyboard_string);
+                keyboard_string="";
+            }
+          
+            
+            if (keyboard_check(vk_backspace)) {
+                if (self.keyboard_del_cooldown<=0) {
+                    current_string = string_copy(current_string, 1,string_length(current_string)-1);
+                    self.keyboard_del_cooldown = 10;
+                }
+            }
+            if keyboard_check_pressed(vk_enter) {
+                 if (!hidden) {
+                    clicked ??= 1;
+                }
+            }
+            
+            
+              if keyboard_check_pressed(vk_space) {
+                 if (!hidden) {
+                    clicked ??= 2;
+                }
+            }
+            
+        }
+        #endregion
     }
     function draw() {
+        
+        
+
         //draw_text(50, 50, draw_string)
         draw_set_color(c_black);
         draw_set_halign(fa_center);
@@ -122,7 +170,7 @@ function virtual_keyboard() constructor  {
         
         var _xoff = x;
         var _yoff = y;
-        var _sprites = [spr_small_key, spr_small_key, spr_small_key, spr_small_key, spr_small_key, spr_big_key];
+    
         var _text = "1234567890AZERTYUIOPQSDFGHJKLMWXCVBN"
         
         var _mx = device_mouse_x_to_gui(0);
@@ -135,6 +183,66 @@ function virtual_keyboard() constructor  {
         draw_roundrect(_xoff-16, _yoff-16, _xoff+room_width, _yoff+540, false)
         draw_set_alpha(1);
         
+        
+        
+        ///////////////////////////////////////////// DRAW KEYBOARD //////////////////////////////////////////////
+        
+        draw_set_font(fnt_small_info)
+        for (var j = 0; j < 4; j++) {
+            var _last_row = (j == 3);
+            var _n_of_key = _last_row ? 6 : 10;
+            for (var i = 0; i < _n_of_key; i++) {
+                
+                var _w = sprite_get_width(spr_key);
+                var _h = sprite_get_height(spr_key);
+                
+                var _additional_offset = _last_row ? 2 * (4 + _w) : 0;
+                var _x = _xoff + i * (4 + _w) + _additional_offset;
+                var _y = _yoff + j * (8 + _h);
+                //show_message(_x)
+                draw_sprite(spr_key, 0, _x, _y);
+                
+        
+                
+                var _key = string_char_at(_text, _char+1);
+                
+                if (mouse_check_button_pressed(mb_left)) {
+                    if (point_in_rectangle(_mx, _my, _x, _y, _x+_w, _y+_h)) {
+                        if (!hidden) and (global.current_pop_message == undefined) current_string+=_key;
+                    }
+                }
+                draw_text(_x+_w/2, _y +_h/2, _key)
+                
+                _char++;
+            }
+        }
+        var _sprites       = [spr_back_key,         spr_validate_key,        spr_space_key_new,                spr_delete_key];
+        var _positions     = [{x:5, y : _yoff+89}, {x:217, y : _yoff + 120}, {x:65, y : _yoff + 120}, {x:217, y:_yoff+89}];
+        
+        for (var i = 0; i <4; i++) {
+            
+            var _sprite = _sprites[i];
+           
+            var _w = sprite_get_width(_sprite);
+            var _h = sprite_get_height(_sprite);
+            var _pos = _positions[i];
+            var _x = _pos.x;
+            var _y = _pos.y;
+             draw_sprite(_sprite, 0, _x, _y);
+            if (mouse_check_button_pressed(mb_left)) {
+                    if (point_in_rectangle(_mx, _my, _x, _y, _x+_w, _y+_h)) {
+                        if (!hidden) {
+                            clicked??=i;
+                            
+                        }
+                    }
+                }
+        }
+        
+        
+        /*
+        ////////////////////////////////////////////
+        var _sprites = [spr_small_key, spr_small_key, spr_small_key, spr_small_key, spr_small_key, spr_big_key];
         for(var i = 0; i < 6; i++) {
             _x = _xoff;
             _y = _yoff + i*32;
@@ -164,28 +272,10 @@ function virtual_keyboard() constructor  {
         _x = _xoff+4;
         
         
-        _sprites = [spr_back_key, spr_validate_key, spr_space_key, spr_delete_key];
-        for (var i = 0; i <4; i++) {
-            
-            var _sprite = _sprites[i];
-            draw_sprite(_sprite, 0, _x, _y);
-            var _w = sprite_get_width(_sprite);
-            var _h = sprite_get_height(_sprite);
-            
-            if (mouse_check_button_pressed(mb_left)) {
-                    if (point_in_rectangle(_mx, _my, _x, _y, _x+_w, _y+_h)) {
-                        if (!hidden) {
-                            clicked??=i;
-                            
-                        }
-                    }
-                }
-        
-            _x+= _w+ 8;
-            
-        }
+   
         
         
+    }*/
     }
     
     

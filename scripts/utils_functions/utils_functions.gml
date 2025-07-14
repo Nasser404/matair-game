@@ -83,3 +83,46 @@ function id_generator(_len=2) {
     }
     return _id;    
 }
+function is_char_alphanum(_char) {
+    var _alphanum = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_";
+    return (string_pos(_char, _alphanum) != 0);
+}
+
+function string_wordwrap_width(text, max_width, brk, split_words) {
+    var pos_space = -1;
+    var pos_current = 1;
+    var text_current = text;
+    var text_output = "";
+
+    if (is_real(brk)) brk = "#";
+
+    while (string_length(text_current) >= pos_current) {
+        var segment = string_copy(text_current, 1, pos_current);
+        if (string_width(segment) > max_width) {
+            // Break at last known space
+            if (pos_space != -1) {
+                text_output += string_copy(text_current, 1, pos_space) + brk;
+                text_current = string_copy(text_current, pos_space + 1, string_length(text_current) - pos_space);
+                pos_current = 1;
+                pos_space = -1;
+            }
+            else if (split_words) {
+                // Force split mid-word
+                text_output += string_copy(text_current, 1, pos_current - 1) + brk;
+                text_current = string_copy(text_current, pos_current, string_length(text_current) - (pos_current - 1));
+                pos_current = 1;
+                pos_space = -1;
+            }
+        }
+        pos_current += 1;
+        if (string_char_at(text_current, pos_current) == " ") {
+            pos_space = pos_current;
+        }
+    }
+
+    if (string_length(text_current) > 0) {
+        text_output += text_current;
+    }
+
+    return text_output;
+}

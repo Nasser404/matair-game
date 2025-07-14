@@ -44,12 +44,12 @@ function main_menu() {
     draw_set_font(fnt_small_info);
     
     //// DRAW GAME AND SERVER VERSION
-    var _col = c_white;
+    var _color = c_white;
     if (global.server_ver != "") {
-        if (global.server_ver != GAME_VER) _col = c_red;
-        else _col = c_lime;
+        if (global.server_ver != GAME_VER) _color = c_red;
+        else _color = c_lime;
     }
-    draw_set_color(_col);
+    draw_set_color(_color);
     
     draw_text(8, 448, $"v {GAME_VER}");
     if (global.server_ver != "") draw_text(8, 434, $"server {global.server_ver}");

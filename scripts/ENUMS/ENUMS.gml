@@ -31,6 +31,9 @@ enum MESSAGE_TYPE {
     INFORMATION            = 20 ,
     
     GAME_CHAT              = 21,
+    
+    
+    SIZE,
 }
 enum CLIENT_TYPE {
     ORB,
@@ -70,4 +73,11 @@ enum INFORMATION_TYPE {
 enum GAME_STATUS {
     on_going = 0,
     ended    = 1
+}
+
+enum SPECIAL_MOVES {
+    PROMOTION      = 0,
+    EN_PASSANT     = 1,         //DISABELED
+    CASTLE         = 2,         // DISABELED
+    NONE           = 3,     
 }

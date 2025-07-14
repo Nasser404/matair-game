@@ -7,17 +7,18 @@ enum piece_type {
     queen
 }
 
-enum piece_color {
-    white,
-    black,
+enum PIECE_COLOR {
+    WHITE,
+    BLACK,
 }
+
 
 /**
  * Chess piece constructor
  * @param {string} name Piece name
  * @param {array<real>} pos Piece position
  * @param {Enum.piece_type} type Piece type
- * @param {Enum.piece_color} color Piece color
+ * @param {Enum.PIECE_COLOR} color Piece color
  * @param {struct} [my_board] Parent board
  */
 function piece(_name, _pos, _type, _color, _board) constructor {
@@ -26,8 +27,8 @@ function piece(_name, _pos, _type, _color, _board) constructor {
     self.type = _type;
     self.color = _color;
     self.moves = []
-    self.sprite = self.color == piece_color.white ? spr_white_pieces : spr_black_pieces;
-    self.forward = self.color == piece_color.white ? -1: 1;
+    self.sprite = self.color ==PIECE_COLOR.WHITE ? spr_white_pieces : spr_black_pieces;
+    self.forward = self.color ==PIECE_COLOR.WHITE ? -1: 1;
     self.has_moved = false;
     self.last_pos  = [-1, -1];
     self.special_moves = [];
@@ -72,37 +73,37 @@ function piece(_name, _pos, _type, _color, _board) constructor {
             
         var _grid = self.my_board.get_grid();
         
-        if (cell_empty(_pos)) return false;
+        if (square_empty(_pos)) return false;
             
         var w_pos = wrap_pos(_pos)
         return _grid[w_pos[0], w_pos[1]].color == self.color;
     }
     
     /**
-    * Check if cell in the given grid at the given pos is empty (!=noone)
+    * Check if square in the given grid at the given pos is empty (!=undefined)
     * @param {array<array>} grid Grid to check in
     * @param {array<Real>} pos Position to check in the grid
-    * @returns {bool} return whether the the cell is empty
+    * @returns {bool} return whether the the square is empty
     */
-   function cell_empty(_pos) {
+   function square_empty(_pos) {
         
     
         if (_pos[1] > 7) or (_pos[1] < 0) return false;
         var w_pos = wrap_pos(_pos)
         var _grid = self.my_board.get_grid();
-        return _grid[w_pos[0], w_pos[1]] == noone;
+        return _grid[w_pos[0], w_pos[1]] == undefined;
     }
     /**
     * Get the piece in the given grid at the given pos
     * @param {array<array>} grid Grid to check in
-    * @param {array<Real>} pos return whether the the cell is empty
+    * @param {array<Real>} pos return whether the the square is empty
     * @returns {struct} 
     */
     function get_piece( _pos) {
         
-        if (_pos[1] > 7) or (_pos[1] < 0) return noone;
+        if (_pos[1] > 7) or (_pos[1] < 0) return undefined;
                     
-        if (cell_empty(_pos)) return noone;
+        if (square_empty(_pos)) return undefined;
             
         var _grid = self.my_board.get_grid();
         var w_pos = wrap_pos(_pos)
@@ -115,7 +116,7 @@ function piece(_name, _pos, _type, _color, _board) constructor {
 /**
  *  Pawn constructor
  * @param {array<real>} pos  Pawn position
- * @param {enum.piece_color} color  Pawn color
+ * @param {enum.PIECE_COLOR} color  Pawn color
  * @param {struct} [board] Pawn parent board
  */
 function pawn(_pos, _color, _board = undefined) : piece("Pawn", _pos, piece_type.pawn, _color, _board) constructor {
@@ -130,26 +131,26 @@ function pawn(_pos, _color, _board = undefined) : piece("Pawn", _pos, piece_type
         var _x = self.pos[0];
         var _y = self.pos[1];
         // simple forward
-        if (cell_empty([_x, _y + forward])) add_move([_x, _y + forward]);
+        if (square_empty([_x, _y + forward])) add_move([_x, _y + forward]);
             
         // doubel forward
-        if (!has_moved) and (cell_empty([_x, _y + forward])) {
-            if cell_empty([_x, _y + 2*forward]) add_move([_x, _y + 2*forward]);
+        if (!has_moved) and (square_empty([_x, _y + forward])) {
+            if square_empty([_x, _y + 2*forward]) add_move([_x, _y + 2*forward]);
         }
             
         // eat left
-        if (!cell_empty([_x + 1, _y + forward])) {
+        if (!square_empty([_x + 1, _y + forward])) {
             if (!on_team([_x + 1, _y+ forward])) add_move([_x + 1, _y+ forward]);
         }
             
         // eat right 
-        if (!cell_empty([_x - 1, _y + forward])) { 
+        if (!square_empty([_x - 1, _y + forward])) { 
             if (!on_team([_x - 1, _y+ forward])) add_move([_x - 1, _y+ forward]); 
         } 
         
-        if (false) { // DISABELED en passant
+        if (ENABLE_EN_PASSANT) { // DISABELED en passant
             // en passant right
-            if (!cell_empty( [_x + 1, _y])) {
+            if (!square_empty( [_x + 1, _y])) {
      
                 var _piece = get_piece( [_x + 1, _y]);
                 if (_piece.get_color() != self.color) {
@@ -163,7 +164,7 @@ function pawn(_pos, _color, _board = undefined) : piece("Pawn", _pos, piece_type
                 }
             }
         // en passant left
-            if (!cell_empty( [_x - 1, _y])) {
+            if (!square_empty( [_x - 1, _y])) {
      
                 var _piece = get_piece( [_x - 1, _y]);
                 if (_piece.get_color() != self.color) {
@@ -202,7 +203,7 @@ function rook(_pos, _color,_board = undefined) : piece("Rook", _pos, piece_type.
         
         // right
         i = 1;
-        while( cell_empty( [_x+i, _y])) {
+        while( square_empty( [_x+i, _y])) {
             add_move([_x+i, _y]);
             i+=1;
         }
@@ -210,7 +211,7 @@ function rook(_pos, _color,_board = undefined) : piece("Rook", _pos, piece_type.
             
         // left
         i = -1;
-        while( cell_empty( [_x+i, _y])) {
+        while( square_empty( [_x+i, _y])) {
             add_move([_x+i, _y]);
             i-=1;
         }
@@ -218,7 +219,7 @@ function rook(_pos, _color,_board = undefined) : piece("Rook", _pos, piece_type.
         
         //up
         i = forward;
-        while( cell_empty( [_x, _y+i])) {
+        while( square_empty( [_x, _y+i])) {
             add_move([_x, _y+i]);
             i+=forward;
         }
@@ -226,7 +227,7 @@ function rook(_pos, _color,_board = undefined) : piece("Rook", _pos, piece_type.
             
         //down
         i = -forward;
-        while( cell_empty( [_x, _y+i])) {
+        while( square_empty( [_x, _y+i])) {
             add_move([_x, _y+i]);
             i-=forward;
         }
@@ -272,7 +273,7 @@ function bishop(_pos, _color,_board = undefined) : piece("Bishop", _pos, piece_t
         i = 1;
         j = forward;
 
-        while(cell_empty( [_x+i, _y+j])) {
+        while(square_empty( [_x+i, _y+j])) {
             add_move([_x+i, _y+j]);
             i+=1;
             j+=forward
@@ -283,7 +284,7 @@ function bishop(_pos, _color,_board = undefined) : piece("Bishop", _pos, piece_t
         i = -1;
         j = forward;
 
-        while(cell_empty( [_x+i, _y+j])) {
+        while(square_empty( [_x+i, _y+j])) {
             add_move([_x+i, _y+j]);
             i-=1;
             j+=forward
@@ -294,7 +295,7 @@ function bishop(_pos, _color,_board = undefined) : piece("Bishop", _pos, piece_t
         i = 1;
         j = -forward;
 
-        while(cell_empty( [_x+i, _y+j])) {
+        while(square_empty( [_x+i, _y+j])) {
             add_move([_x+i, _y+j]);
             i+=1;
             j-=forward
@@ -305,7 +306,7 @@ function bishop(_pos, _color,_board = undefined) : piece("Bishop", _pos, piece_t
         i = -1;
         j = -forward;
 
-        while(cell_empty( [_x+i, _y+j])) {
+        while(square_empty( [_x+i, _y+j])) {
             add_move([_x+i, _y+j]);
             i-=1;
             j-=forward
@@ -329,7 +330,7 @@ function queen(_pos, _color,_board = undefined) : piece("Queen", _pos, piece_typ
         var i,j;
         // right
         i = 1;
-        while( cell_empty( [_x+i, _y])) {
+        while( square_empty( [_x+i, _y])) {
             add_move([_x+i, _y]);
             i+=1;
         }
@@ -337,7 +338,7 @@ function queen(_pos, _color,_board = undefined) : piece("Queen", _pos, piece_typ
             
         // left
         i = -1;
-        while( cell_empty( [_x+i, _y])) {
+        while( square_empty( [_x+i, _y])) {
             add_move([_x+i, _y]);
             i-=1;
         }
@@ -345,7 +346,7 @@ function queen(_pos, _color,_board = undefined) : piece("Queen", _pos, piece_typ
         
         //up
         i = forward;
-        while( cell_empty( [_x, _y+i])) {
+        while( square_empty( [_x, _y+i])) {
             add_move([_x, _y+i]);
             i+=forward;
         }
@@ -353,7 +354,7 @@ function queen(_pos, _color,_board = undefined) : piece("Queen", _pos, piece_typ
             
         //down
         i = -forward;
-        while( cell_empty( [_x, _y+i])) {
+        while( square_empty( [_x, _y+i])) {
             add_move([_x, _y+i]);
             i-=forward;
         }
@@ -363,7 +364,7 @@ function queen(_pos, _color,_board = undefined) : piece("Queen", _pos, piece_typ
         i = 1;
         j = forward;
 
-        while(cell_empty( [_x+i, _y+j])) {
+        while(square_empty( [_x+i, _y+j])) {
             add_move([_x+i, _y+j]);
             i+=1;
             j+=forward
@@ -374,7 +375,7 @@ function queen(_pos, _color,_board = undefined) : piece("Queen", _pos, piece_typ
         i = -1;
         j = forward;
 
-        while(cell_empty( [_x+i, _y+j])) {
+        while(square_empty( [_x+i, _y+j])) {
             add_move([_x+i, _y+j]);
             i-=1;
             j+=forward
@@ -385,7 +386,7 @@ function queen(_pos, _color,_board = undefined) : piece("Queen", _pos, piece_typ
         i = 1;
         j = -forward;
 
-        while(cell_empty( [_x+i, _y+j])) {
+        while(square_empty( [_x+i, _y+j])) {
             add_move([_x+i, _y+j]);
             i+=1;
             j-=forward
@@ -396,7 +397,7 @@ function queen(_pos, _color,_board = undefined) : piece("Queen", _pos, piece_typ
         i = -1;
         j = -forward;
 
-        while(cell_empty( [_x+i, _y+j])) {
+        while(square_empty( [_x+i, _y+j])) {
             add_move([_x+i, _y+j]);
             i-=1;
             j-=forward
@@ -410,7 +411,7 @@ function queen(_pos, _color,_board = undefined) : piece("Queen", _pos, piece_typ
 /**
  * King constructor
  * @param {array<real>} pos King position
- * @param {enum.piece_color} color King color
+ * @param {enum.PIECE_COLOR} color King color
  * @param {struct} [board] King parent board
  */
 function king(_pos, _color,_board = undefined) : piece("King", _pos, piece_type.king, _color, _board) constructor {
@@ -437,13 +438,13 @@ function king(_pos, _color,_board = undefined) : piece("King", _pos, piece_type.
         
         // Right caste (DISABELED)
         var _rook,_line_clear, _line_safe;
-        if (false) { // !self.has_moved
+        if (ENABLE_CASTLE) && (!self.has_moved) {
             _rook  = get_piece( [_x + 3, _y]);
-            if (_rook != noone) {
+            if (_rook != undefined) {
                 if ((!_rook.has_moved) and (_rook.get_type() == piece_type.rook)) {
-                    _line_clear = cell_empty( [_x + 1, _y]) && cell_empty( [_x + 2, _y]);
+                    _line_clear = square_empty( [_x + 1, _y]) && square_empty( [_x + 2, _y]);
                     
-                    _line_safe  = self.my_board.cell_safe([_x + 1, _y], self.color) && self.my_board.cell_safe([_x + 2, _y], self.color);
+                    _line_safe  = self.my_board.square_safe([_x + 1, _y], self.color) && self.my_board.square_safe([_x + 2, _y], self.color);
                     if (_line_clear) && (_line_safe)  {
                         
                         add_move([_x + 2, _y]);
@@ -456,14 +457,14 @@ function king(_pos, _color,_board = undefined) : piece("King", _pos, piece_type.
         }
         
         // Left castle (DISABELED)
-        if (false) {// !self.has_moved
+        if (ENABLE_CASTLE) && (!self.has_moved) { 
             _rook  = get_piece( [_x - 4, _y]);
-            if (_rook != noone) {
+            if (_rook != undefined) {
                 if ((!_rook.has_moved) and (_rook.get_type() == piece_type.rook)) {
-                    _line_clear = cell_empty( [_x - 1, _y]) && cell_empty( [_x - 2, _y])&& cell_empty( [_x - 3, _y]);
+                    _line_clear = square_empty( [_x - 1, _y]) && square_empty( [_x - 2, _y])&& square_empty( [_x - 3, _y]);
                     
                     //show_message("a") 
-                    _line_safe  = self.my_board.cell_safe([_x - 1, _y], self.color) && self.my_board.cell_safe([_x - 2, _y], self.color) && self.my_board.cell_safe([_x - 3, _y], self.color);
+                    _line_safe  = self.my_board.square_safe([_x - 1, _y], self.color) && self.my_board.square_safe([_x - 2, _y], self.color) && self.my_board.square_safe([_x - 3, _y], self.color);
                     
                     if (_line_clear) && (_line_safe)  {
                         

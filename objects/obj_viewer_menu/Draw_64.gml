@@ -35,7 +35,7 @@ if (global.game_list == undefined) { /// IF NOT CONENCTED TO SERVER
         draw_set_color(c_red);
         draw_text(135, 240, "UNABLE TO CONNECT\nTRY AGAIN");
     }
-} else { // IS IS CONNECTED TO SERT
+} else { // IS IS CONNECTED TO SERVER
     
     if (global.game_board != undefined) { // IF GAME BOARD BEING DRAWN DISPLAY SPECTATOR LABEL AND EXIT CODE
         draw_sprite(spr_spectating_indicator, 0,88, 432)
