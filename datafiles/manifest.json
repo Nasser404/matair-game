@@ -1,1 +1,43 @@
-{"theme_color":"#302e2b","background_color":"#3c3c3c","icons":[{"purpose":"maskable","sizes":"512x512","src":"icon512_maskable.png","type":"image/png"},{"purpose":"any","sizes":"512x512","src":"icon512_rounded.png","type":"image/png"}],"orientation":"portrait","display":"standalone","dir":"rtl","lang":"fr-FR","start_url":"http://steamhouse.ddns.net:8084/matair/","scope":"http://steamhouse.ddns.net:8084/matair/","name":"Mat@ir","short_name":"Mat@ir","description":"Spherical chess app","id":"c45d3d3a-9ec6-4602-a402-2341c19ca185"}
+{
+  "name": "Mat@ir",
+  "short_name": "Mat@ir",
+  "description": "Spherical chess app",
+  "id": "c45d3d3a-9ec6-4602-a402-2341c19ca185",
+  "lang": "fr-FR",
+  "dir": "ltr",
+  "start_url": "/MATAIR_V1/",
+  "scope": "/MATAIR_V1/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#3c3c3c",
+  "theme_color": "#302e2b",
+  "categories": ["games", "board"],
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "img/icon512_maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "img/icon512_rounded.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "img/mobile_screenshot.png",
+      "type": "image/png",
+      "sizes": "540x720"
+    },
+    {
+      "src": "img/desktop_screenshot.jpg",
+      "type": "image/jpeg",
+      "sizes": "1920x1080",
+      "form_factor": "wide"
+    }
+  ]
+}

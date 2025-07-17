@@ -239,7 +239,7 @@ function player_client() constructor {
     
     function handle_player_connect(_socket, data) {
         
-        if (CENSOR_TEXT) global.name = string_scunthorpe(global.name);
+        if (CENSOR_TEXT) global.name = censor_string(global.name);
             
         
         var _data = {

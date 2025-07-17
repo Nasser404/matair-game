@@ -126,7 +126,7 @@ if (global.chat_up) {
                 var _game_id = global.game_info[$ "game_id"];
                 var _name =( global.client_type == CLIENT_TYPE.VIEWER) ? $"viewer({temp_id})" : global.name;
                 
-                var _censored_string =  CENSOR_TEXT ? string_scunthorpe(global.chat_message) : global.chat_message;
+                var _censored_string =  CENSOR_TEXT ? censor_string(global.chat_message) : global.chat_message;
                 player_send_packet({"type" : MESSAGE_TYPE.GAME_CHAT, "message" : [_name, _censored_string, global.client_type], "game_id" : _game_id})
                 global.chat_message = "";
                 

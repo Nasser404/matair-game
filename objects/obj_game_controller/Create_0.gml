@@ -4,7 +4,7 @@ if (instance_number(obj_game_controller)>1) {
     exit;
 }
 
-init_scunthorpe("scunthorpe/en");
+profanity_init();
 randomize();
 window_set_color(#302E2B);
 display_set_gui_size(camera_get_view_width(view_camera[0]), camera_get_view_height(view_camera[0]));
@@ -12,8 +12,9 @@ audio_channel_num(1);
 
 depth = 0;
 
-global.name     = "TEST";
-global.orb_code = "VGPT";
+global.name     = "";
+global.orb_code = "";
+
 
 global.vk = new  virtual_keyboard();
 
@@ -36,7 +37,7 @@ global.client_type      = undefined;
 
 global.game_chat                = undefined;
 global.chat_up                  = false;
-global.chat_message             = "BONJOUR A TOUS LES ARABES DU 94";
+global.chat_message             = "";
 global.new_message_indicator    = false; 
 
 global.pop_message_queue        = []

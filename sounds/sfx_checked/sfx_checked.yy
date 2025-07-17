@@ -9,7 +9,7 @@
   "bitRate":128,
   "compression":0,
   "conversionMode":0,
-  "duration":0.36,
+  "duration":0.33229026,
   "name":"sfx_checked",
   "parent":{
     "name":"Sons",
