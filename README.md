@@ -39,27 +39,17 @@ This guide will walk you through exporting the game to an HTML5 format suitable 
     After a successful export, your chosen directory should contain an `index.html` file and an `html5game` subdirectory, among other files. It should look similar to this:
     ![Screenshot showing the initial export directory structure](/screenshots/export_directory.png)
 
-4.  **Relocate PWA Files:**
-    For Progressive Web App (PWA) functionality, you need to move specific files from the `html5game` subdirectory to the main export directory (the one containing `index.html`).
-    *   The files to move are:
-        *   `manifest.json`
-        *   `serviceWorker.js`
-        *   `icon512_rounded.png`
-        *   `icon512_maskable.png`
-    ![Screenshot showing files to move to the main directory](/screenshots/file_to_move.png)
-    After moving these files, your main export directory should look like this:
-    ![Screenshot showing the main directory after file relocation](/screenshots/final_directory.png)
 
-5.  **Configure Server Connection:**
+4.  **Configure Server Connection:**
     *   Navigate into the `html5game` subdirectory.
     *   Open the `config.ini` file with a text editor.
     *   Modify the `server_ip` and `server_port` values to match the IP address and port of the machine hosting your Mat@ir game server (the machine running the [Python backend script](https://github.com/Nasser404/matair-server)).
 
 > [!NOTE]
-> If you are testing the exported game locally and running the [Python server script](https://github.com/Nasser404/matair-server) on the *same machine*, you can often keep the default `config.ini` settings (e.g., `server_ip = "127.0.0.1"`).
+> If you are testing the exported game locally and running the [Python server script](https://github.com/Nasser404/matair-server) on the *same machine*, you can keep the default `config.ini` settings for testing (`server_ip = "127.0.0.1"`).
 
 6.  **Deploy to Server:**
-    Upload the entire contents of your main export directory (including `index.html`, the modified `html5game` subdirectory, and the relocated PWA files) to a directory on your web server.
+    Upload the entire contents of your main export directory (`index.html`, `html5game`, etc..) to a directory on your web server.
 
 ## Local Testing and Development
 
